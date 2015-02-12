@@ -8,8 +8,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-<!--     <url-pattern>/faces/*</url-pattern> -->
-	<url-pattern>*.jsf</url-pattern>
+	<url-pattern>*.html</url-pattern>
   </servlet-mapping>
   <context-param>
     <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
@@ -23,7 +22,4 @@
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
-  <welcome-file-list>
-  	<welcome-file>index.jsf</welcome-file>
-  </welcome-file-list>
 </web-app>

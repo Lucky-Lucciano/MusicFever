@@ -19,6 +19,10 @@ public class UserBean implements Serializable {
 	private boolean loggedIn = false;
 	
 	
+	// Setuje se samo active na false i prikaze BUBBLE meesage ako je uspjesno
+	public void deleteUser() {
+		
+	}
 	
 
 	public User getUser() {

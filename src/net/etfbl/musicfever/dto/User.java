@@ -8,6 +8,7 @@ public class User {
 	private int usergroup;
 	private boolean active;
 	private boolean approved;
+	private boolean superuser;
 	private String username;
 	private String password;
 	private Date registration;
@@ -23,12 +24,13 @@ public class User {
 	}
 	
 
-	public User(int id, int usergroup, boolean active, boolean approved,
+	public User(int id, int usergroup, boolean active, boolean approved, boolean superuser,
 			String username, String password, Date registration, String name,
 			String surname, String email, String jMBG, String profileImage) {
 		super();
 		this.id = id;
 		this.usergroup = usergroup;
+		this.superuser = superuser;
 		this.active = active;
 		this.approved = approved;
 		this.username = username;
@@ -148,4 +150,28 @@ public class User {
 	public void setPlaylists(ArrayList<Playlist> playlists) {
 		this.playlists = playlists;
 	}
+
+
+	public boolean isSuperuser() {
+		return superuser;
+	}
+
+
+	public void setSuperuser(boolean superuser) {
+		this.superuser = superuser;
+	}
+
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", usergroup=" + usergroup + ", active="
+				+ active + ", approved=" + approved + ", superuser="
+				+ superuser + ", username=" + username + ", password="
+				+ password + ", registration=" + registration + ", name="
+				+ name + ", surname=" + surname + ", email=" + email
+				+ ", JMBG=" + JMBG + ", profileImage=" + profileImage
+				+ ", playlists=" + playlists + "]";
+	}
+	
+	
 }

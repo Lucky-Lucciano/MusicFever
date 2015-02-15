@@ -1,0 +1,80 @@
+body {
+	background: none repeat scroll 0 0 #fff;
+	margin: 0 auto;
+}
+
+#header {
+/* 	height: 50px; */
+	
+	display: block;
+	padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 8px;
+    padding-top: 7px;
+    border-bottom: 1px solid #e8e8e8;
+    
+    background: none repeat scroll 0 0 #5AA39F;
+}
+
+#logo-img {
+	width: 160px;
+}
+
+
+a:hover { 
+  color: red
+}
+h1,h2,h3 {
+  text-align: center;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  color: black;
+}
+h1.title {
+  display: table;
+  margin: auto;
+  background-color: #afc4d6;
+  border-width: 4px;
+  border-style: outset;
+  border-color: #9fd1ff;
+  padding: 5px 8px;
+  letter-spacing: -.025em;
+}
+.formTable {
+  display: table;
+}
+.formTable td:first-child {
+  text-align: right;
+}
+th { background-color: #afc4d6;
+     font-size: 110%;
+     font-family: Arial, Helvetica, sans-serif;
+}
+legend {
+  font-weight: bold;
+  color: black;
+  background-color: #afc4d6;
+  border: 1px solid #1a55bf;
+  padding: 3px 5px;
+}
+input, textarea {
+  background-color: #ecedf2;
+  text-align: left;
+}
+input[type="checkbox"] {
+  background-color: transparent;  /* For IE -- doesn't matter in FF or Chrome */
+}
+input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
+  background-color: #9fd1ff;
+}
+.error {
+  color: red;
+  font-weight: bold;
+}
+.blue-error {
+  color: blue;
+  font-weight: bold;
+}
+ul.aligned {  /* So if in centered div, the bullets line up under each other */
+  display: inline-block;
+  text-align: left; 
+}*/

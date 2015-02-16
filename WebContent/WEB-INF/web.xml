@@ -19,7 +19,19 @@
     <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
     <param-value>resources.application</param-value>
   </context-param>
+  <context-param>
+	<param-name>primefaces.THEME</param-name>
+	<param-value>overcast</param-value>
+  </context-param>
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
+  <filter>   <!-- filter koji iskljucuje kesiranje koje radi browser -->
+	<filter-name>NoCacheFilter</filter-name>
+	<filter-class>net.etfbl.musicfever.utils.NoCacheFilter</filter-class>
+  </filter>
+  <filter-mapping>
+	<filter-name>NoCacheFilter</filter-name>
+	<servlet-name>Faces Servlet</servlet-name>
+  </filter-mapping>
 </web-app>

@@ -20,9 +20,6 @@ public class UserBean implements Serializable {
 	private boolean loggedIn = false;
 	private String test = "hoce li ovo pisati?";
 	
-	
-	
-	
 	public String getTest() {
 		return test;
 	}
@@ -71,6 +68,7 @@ public class UserBean implements Serializable {
 	}
 	
 	public String logout() {
+		System.out.println("Logged out");
 		loggedIn = false;
 		return "index?faces-redirect=true";
 	}

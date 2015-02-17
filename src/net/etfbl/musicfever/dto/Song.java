@@ -10,6 +10,7 @@ public class Song {
 	private boolean active;
 	private int releaseDate;
 	private int duration;
+	private int fileType;
 	private Date registrationDate;
 	private String location;
 	private String lyrics;
@@ -20,11 +21,12 @@ public class Song {
 	}
 	
 	
-	public Song(int id, String artist, String name, boolean active,
+	public Song(int id, String artist, String name, boolean active, int fileType,
 			int releaseDate, int duration, Date registrationDate,
 			String location, String lyrics) {
 		super();
 		this.id = id;
+		this.fileType = fileType;
 		this.artist = artist;
 		this.name = name;
 		this.active = active;
@@ -89,6 +91,15 @@ public class Song {
 	}
 	public void setLyrics(String lyrics) {
 		this.lyrics = lyrics;
+	}
+
+	public int getFileType() {
+		return fileType;
+	}
+
+
+	public void setFileType(int fileType) {
+		this.fileType = fileType;
 	}
 
 

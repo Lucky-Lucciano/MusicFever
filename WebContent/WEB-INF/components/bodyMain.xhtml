@@ -4,9 +4,15 @@
     <h:head/>
     <h:body>
         <ui:composition>            
-            <div>
-				<p> Test body main</p>
-			</div>      
+           <h:panelGroup layout="block" style="margin-top: 60px">
+				<h:outputLink value="admin.html" styleClass="signup-button" style="position:relative; background-color:black">
+			        <h:outputText value="Admin" />
+			    </h:outputLink>
+				<span class="bullet">•</span>
+				<h:outputLink value="account.html" styleClass="signup-button" style="position:relative; background-color:black">
+			        <h:outputText value="Account" />
+			    </h:outputLink>
+			</h:panelGroup>     
         </ui:composition>
     </h:body>
 </html>

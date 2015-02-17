@@ -5,15 +5,12 @@
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>               
         <title><ui:insert name="title">Music Fever!</ui:insert></title>
+        <h:outputStylesheet library="css" name="style.css"></h:outputStylesheet>
     </h:head>
 
 	<body>
-		<ui:debug hotkey="x" rendered="#{initParam['javax.faces.FACELETS_DEVELOPMENT']}"/>
-		
 		  <ui:insert name="header"> </ui:insert>
-	
-		  <ui:insert name="content"> </ui:insert>
-		
+		  <ui:insert name="body"> </ui:insert>
 		  <ui:insert name="footer"> </ui:insert>
 	</body>
 </html>

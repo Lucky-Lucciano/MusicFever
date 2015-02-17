@@ -5,11 +5,11 @@
     <h:body>
         <ui:composition template="/WEB-INF/templates/layout.xhtml">            
             <ui:define name="header">
-                <ui:include src="/WEB-INF/components/header.xhtml"></ui:include>
-            </ui:define>            
-           	<ui:define name="body">
-           		<ui:include src="/WEB-INF/components/bodyAdmin.xhtml"></ui:include>
-           	</ui:define>
+                <ui:include src="/WEB-INF/components/headerPlain.xhtml"></ui:include>
+            </ui:define>
+            <ui:define name="body">
+                <ui:include src="/WEB-INF/components/bodyAccount.xhtml"></ui:include>
+            </ui:define>          
         </ui:composition>
     </h:body>
 </html>

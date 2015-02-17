@@ -1,0 +1,43 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+        <div class="content">
+			<!--   Napraviti lightbox unos?     -->
+        	<p:commandButton value="Add" icon="ui-icon-plus" style="margin-bottom: 10px" ></p:commandButton>            
+            <h:form id="form">
+			    <p:growl id="msgs" showDetail="true" />
+			 
+			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}">
+			        <f:facet name="header">
+			            Users
+			        </f:facet>
+			        <p:column headerText="Username">
+			            <h:outputText value="#{user.username}" />
+			        </p:column>
+			        <p:column headerText="Type">
+			            <h:outputText value="#{user.superuser ? 'Superuser' : 'Basic'}" />
+			        </p:column>
+			        <p:column headerText="E-mail">
+			            <h:outputText value="#{user.email}" />
+			        </p:column>
+			        <p:column headerText="Registration date">
+			            <h:outputText value="#{user.registration}" />
+			        </p:column>
+			        <p:column style="width:32px;text-align: center">
+			             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit">
+			                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" />
+			            </p:commandButton>
+			        </p:column>
+			    </p:dataTable>
+		    </h:form>         
+        </div>
+        	
+        </ui:composition>
+    </h:body>
+</html>

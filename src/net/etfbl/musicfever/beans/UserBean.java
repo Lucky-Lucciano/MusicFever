@@ -17,6 +17,7 @@ public class UserBean implements Serializable {
 	private User user = new User();
 	private User userAdd = new User();
 	private User userDelete = new User();
+	private User userSelected = new User();
 	private boolean loggedIn = false;
 	private String test = "hoce li ovo pisati?";
 	
@@ -31,6 +32,11 @@ public class UserBean implements Serializable {
 	// Setuje se samo active na false i prikaze BUBBLE meesage ako je uspjesno
 	public void deleteUser() {
 		
+	}
+	
+	public ArrayList<User> getAllUsers() {
+		userSelected = new User();
+		return UserDAO.getAllUsers();
 	}
 	
 	// Podesiti return da vratina poseban page ako cu ici bez modal window.
@@ -104,4 +110,14 @@ public class UserBean implements Serializable {
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
 	}
+
+	public User getUserSelected() {
+		return userSelected;
+	}
+
+	public void setUserSelected(User userSelected) {
+		this.userSelected = userSelected;
+	}
+	
+	
 }

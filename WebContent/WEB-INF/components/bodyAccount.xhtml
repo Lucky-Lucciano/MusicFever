@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head />
+    <ui:composition>
+	    <div class="text-block content" id="top">  
+			<h1 style="border-bottom: 1px solid #ccc;">Account Settings</h1>
+			<ul class="navlist clearfix">
+				<li class="active"><a href="#">General</a></li>
+				<li><a href="https://tunein.com/social/">Social</a></li>
+				<li><a href="https://tunein.com/devices/">Devices</a></li>
+				<li><a href="https://tunein.com/mediatypes/">Media Types</a></li>
+			 </ul>
+			 
+			 <ul class="list-form">
+				<li class="clearfix">
+					<label>Name</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText type="FirstName" value="#{userBean.userSelected.name}" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
+							<span class="field-validation-valid" data-valmsg-replace="true" data-valmsg-for="FirstName"></span>
+						</div>
+						<div class="warning-cont">
+							<p:inputText type="LastName" value="#{userBean.userSelected.surname}" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
+							<span class="field-validation-valid" data-valmsg-replace="true" data-valmsg-for="LastName"></span>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+    </ui:composition>    
+</html>

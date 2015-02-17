@@ -14,7 +14,7 @@ public class UserDAO {
 	private static final String SQL_LOGIN = "SELECT * FROM user WHERE username = ? and password = md5(?) limit 1";
 	private static final String SQL_ADD_USER = "INSERT INTO users(username, password, name, surname, email, usergroup, JMBG, registration_date, active, approved, superuser, image) values(?, md5(?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
 	private static final String SQL_APPROVE_USER = "UPDATE user SET approved = 1 WHERE id=?";
-	private static final String SQL_ALL_USERS = "SELECT * FROM user";
+	private static final String SQL_ALL_USERS = "SELECT * FROM user WHERE usergroup=0";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
 	
 	// Ajaxom se moze provjeriti je l dostupno - ako ne bude vremena izbaciti

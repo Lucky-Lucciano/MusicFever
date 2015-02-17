@@ -17,51 +17,12 @@
 						</h:outputLink> 
 					</div>
 					
-					<h:panelGroup rendered="#{!userBean.loggedIn}" styleClass="anchors" layout="block" >
-						<h:form style="display: inline-block">            
-						    <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login" styleClass="signup-button" >
-						        <h:outputText value="Sign In" />
-						    </h:outputLink>
-						 
-						    <p:dialog header="Login" widgetVar="dlg" resizable="false">
-						        <h:panelGrid columns="2" cellpadding="5" style="z-index: 1001">
-						            <h:outputLabel for="username" value="Username:" />
-						            <p:inputText id="username" value="#{userBean.user.username}" required="true" label="username" />
-						 
-						            <h:outputLabel for="password" value="Password:" />
-						            <p:password id="password" value="#{userBean.user.password}" required="true" label="password" />
-						 
-						            <f:facet name="footer">
-						                <p:commandButton value="Login" action="#{userBean.login}" />
-						            </f:facet>  
-						        </h:panelGrid>
-						    </p:dialog>
-						</h:form>
-	<!-- 					<p:lightBox id="lightbox"> -->
-	<!-- 						<h:outputLink value="#" styleClass="signup-button" > -->
-	<!-- 							<h:outputText value="Sign In" /> -->
-	<!-- 							<f:facet name="inline"> -->
-									
-	<!-- 							</f:facet> -->
-	<!-- 						</h:outputLink> -->
-	<!-- 					</p:lightBox> -->
-						<span class="bullet">•</span>
-						<h:outputLink value="registration.xthml" styleClass="signup-button">
-					        <h:outputText value="Sign Up" />
-					    </h:outputLink>
-					</h:panelGroup>
+				
 					<h:panelGroup rendered="#{userBean.loggedIn}" styleClass="anchors" layout="block"> 
 						<h:form>
 							<h:commandLink action="#{userBean.logout}" value="logout" styleClass="signup-button"></h:commandLink> 
 						</h:form>
 					</h:panelGroup>
-					<div id="searchBox">
-						<p:inputText type="Search" placeholder="Search" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
-<!-- 						<h:outputLink value="index.html" style="display: inline-block;"> -->
-<!-- 							<img id="search-button" src="resources/img/search_button.png"/> -->
-<!-- 						</h:outputLink>  -->
-						<p:commandButton value="Search" icon="ui-icon-search" ></p:commandButton>
-					</div>
 				</div>
 			</div>          
         </ui:composition>

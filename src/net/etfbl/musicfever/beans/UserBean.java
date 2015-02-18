@@ -19,19 +19,16 @@ public class UserBean implements Serializable {
 	private User userDelete = new User();
 	private User userSelected = new User();
 	private boolean loggedIn = false;
-	private String test = "hoce li ovo pisati?";
-	
-	public String getTest() {
-		return test;
-	}
-
-	public void setTest(String test) {
-		this.test = test;
-	}
 
 	// Setuje se samo active na false i prikaze BUBBLE meesage ako je uspjesno
 	public void deleteUser() {
 		
+	}
+	
+	public String updateUser() {
+		// U sluacju da ne uspije, kroz growl ispsiati gresku, inace refresh
+		UserDAO.approveUser(userSelected);
+		return "";
 	}
 	
 	public ArrayList<User> getAllUsers() {
@@ -47,15 +44,10 @@ public class UserBean implements Serializable {
 			String site = "";
 			// Sada na osnvu tiupa oderditi koju stranicu da vidi - po potrebi iz baze podatke dodatne popuniti
 			switch (user.getUsergroup()) {
-				// Samo users grupa i admin; ako je korsinik superuser, to se u bazi cuva.
 				case 0:
 					System.out.println("Grupa: 0 - User");
 					site = "user?faces-redirect=true";
 					break;
-				/*case 1:
-					System.out.println("Grupa: 1 - Superuser");
-					site = "superuser?faces-redirect=true";
-					break;*/
 				case 1:
 					System.out.println("Grupa: 1 - Admin");
 					site = "admin?faces-redirect=true";
@@ -118,6 +110,4 @@ public class UserBean implements Serializable {
 	public void setUserSelected(User userSelected) {
 		this.userSelected = userSelected;
 	}
-	
-	
 }

@@ -5,30 +5,70 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head />
     <ui:composition>
-	    <div class="text-block content" id="top">  
-			<h1 style="border-bottom: 1px solid #ccc;">Account Settings</h1>
-			<ul class="navlist clearfix">
-				<li class="active"><a href="#">General</a></li>
-				<li><a href="https://tunein.com/social/">Social</a></li>
-				<li><a href="https://tunein.com/devices/">Devices</a></li>
-				<li><a href="https://tunein.com/mediatypes/">Media Types</a></li>
-			 </ul>
-			 
-			 <ul class="list-form">
+    	<h:form styleClass="content">
+	     	<div class="text-block" id="top">  
+				<h1>Account Settings</h1>
+				<ul class="navlist clearfix">
+					<li class="active"><a href="#">General</a></li>
+					<li><a href="https://tunein.com/social/">Favourites</a></li>
+					<li><a href="https://tunein.com/devices/">Comments</a></li>
+					<li><a href="https://tunein.com/mediatypes/">Play Lists</a></li>
+				 </ul>
+			</div>
+			<ul class="list-form">
 				<li class="clearfix">
 					<label>Name</label>
 					<div class="entry">
-						<div class="warning-cont">
-							<p:inputText type="FirstName" value="#{userBean.userSelected.name}" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
-							<span class="field-validation-valid" data-valmsg-replace="true" data-valmsg-for="FirstName"></span>
+						<div class="warning-cont" style="width: 210px">
+							<p:inputText placeholder="FirstName" value="#{userBean.userSelected.name}" styleClass="searchInput"></p:inputText>
 						</div>
+						<div class="warning-cont" style="width: 200px">
+							<p:inputText placeholder="LastName" value="#{userBean.userSelected.surname}" styleClass="searchInput"></p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="Email">Email</label>
+					<div class="entry">
 						<div class="warning-cont">
-							<p:inputText type="LastName" value="#{userBean.userSelected.surname}" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
-							<span class="field-validation-valid" data-valmsg-replace="true" data-valmsg-for="LastName"></span>
+							<p:inputText value="#{userBean.userSelected.email}" styleClass="searchInput long"></p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="UserName">Username</label>
+					<div class="entry username">
+						<div class="warning-cont">
+							<p:inputText placeholder="UserName" value="#{userBean.userSelected.username}" styleClass="searchInput long" disabled="true"></p:inputText>
+						</div>
+					</div>
+				</li>
+<!-- 				<li class="clearfix"> -->
+<!-- 					<label for="Password">Password</label> -->
+<!-- 					<div class="entry"> -->
+<!-- 						<div class="warning-cont"> -->
+<!-- 							<p:password value="#{userBean.userSelected.password}" styleClass="searchInput long"></p:password> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</li> -->
+				<li class="clearfix">
+					<label for="JMBG">JMBG</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText value="#{userBean.userSelected.JMBG}" styleClass="searchInput long"></p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="picture">Profile image</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText placeholder="Picture URL" value="#{userBean.userSelected.profileImage}" styleClass="searchInput long"></p:inputText>
 						</div>
 					</div>
 				</li>
 			</ul>
-		</div>
+			<p:commandButton value="Save" actionListener="#{userBean.updateUser}" ajax="false" style="margin: 10px 0 25px 210px;"/>
+     	</h:form>
     </ui:composition>    
 </html>

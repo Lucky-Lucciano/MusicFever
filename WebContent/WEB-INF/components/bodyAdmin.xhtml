@@ -29,7 +29,7 @@
 			        <p:column headerText="Registration date">
 			            <h:outputText value="#{user.registration}" />
 			        </p:column>
-			        <p:column style="width:32px;text-align: center">
+			        <p:column style="width:32px;text-align: center" headerText="Details">
 			             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit">
 			                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" />
 			            </p:commandButton>

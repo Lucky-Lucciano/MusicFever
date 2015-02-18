@@ -61,6 +61,24 @@ public class UserDAO {
 		}
 	}
 	
+	public static void updateUser(User user) {
+		/*Connection connection = null;
+		Object values[] = {user.getId()};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_APPROVE_USER, false, values);
+			pstmt.executeUpdate();
+			pstmt.close();
+			return true;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return false;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}*/
+	}
+	
 	public static boolean addUser(User user) {
 		Connection connection = null;
 		boolean retVal = false;

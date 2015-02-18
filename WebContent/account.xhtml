@@ -3,12 +3,13 @@
       xmlns:h="http://java.sun.com/jsf/html">
     <h:head/>
     <h:body>
-        <ui:composition template="/WEB-INF/templates/layout.xhtml">            
+        <ui:composition template="/WEB-INF/templates/layout.xhtml">    
             <ui:define name="header">
                 <ui:include src="/WEB-INF/components/headerPlain.xhtml"></ui:include>
             </ui:define>
             <ui:define name="body">
                 <ui:include src="/WEB-INF/components/bodyAccount.xhtml"></ui:include>
+                <h:outputStylesheet library="css" name="account.css"></h:outputStylesheet>
             </ui:define>          
         </ui:composition>
     </h:body>

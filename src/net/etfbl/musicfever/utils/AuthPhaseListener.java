@@ -20,22 +20,22 @@ public class AuthPhaseListener implements PhaseListener {
 		context.getSession(true);
 		Map sessMap = context.getSessionMap();
 
-		UserBean korisnikBean = (UserBean) sessMap.get("korisnikBean");
+		UserBean userBean = (UserBean) sessMap.get("userBean");
 
-		boolean onLoginPage = (-1 != facesContext.getViewRoot().getViewId()
-				.lastIndexOf("pocetna")) ? true : false;
-		boolean onPretragaGost = (-1 != facesContext.getViewRoot().getViewId()
-				.lastIndexOf("pretragaGost")) ? true : false;
-		boolean onRegistracijaPage = (-1 != facesContext.getViewRoot().getViewId()
-				.lastIndexOf("registracija")) ? true : false;
+		boolean onIndex = (-1 != facesContext.getViewRoot().getViewId()
+				.lastIndexOf("index")) ? true : false;
+		boolean onAccount = (-1 != facesContext.getViewRoot().getViewId()
+				.lastIndexOf("account")) ? true : false;
+		boolean onRegistrationPage = (-1 != facesContext.getViewRoot().getViewId()
+				.lastIndexOf("registration")) ? true : false;
 		boolean onPrikaziSlikuPage = (-1 != facesContext.getViewRoot().getViewId()
 				.lastIndexOf("prikaziSliku")) ? true : false;
 		
-		if (!onLoginPage && ((korisnikBean == null) || !(korisnikBean.isLoggedIn())) && !onPretragaGost && !onRegistracijaPage && !onPrikaziSlikuPage) {
+		if (!onIndex && ((userBean == null) || !(userBean.isLoggedIn())) && !onAccount && !onRegistrationPage && !onPrikaziSlikuPage) {
 			event.getFacesContext().getApplication().getNavigationHandler()
 					.handleNavigation(event.getFacesContext(), null, "pocetna");
 		}
-		boolean onAdminPage = (-1 != facesContext.getViewRoot().getViewId()
+		/*boolean onAdminPage = (-1 != facesContext.getViewRoot().getViewId()
 				.lastIndexOf("admin")) ? true : false;
 		boolean onAzurirajDestinacijuPage = (-1 != facesContext.getViewRoot()
 				.getViewId().lastIndexOf("azurirajDestinaciju")) ? true : false;
@@ -54,9 +54,9 @@ public class AuthPhaseListener implements PhaseListener {
 				.getViewRoot().getViewId()
 				.lastIndexOf("registracijePoMjesecima")) ? true : false;
 
-		if (korisnikBean != null) {
-			if (korisnikBean.isLoggedIn()
-					&& !(korisnikBean.getUser().getUsergroup() == 1)
+		if (userBean != null) {
+			if (userBean.isLoggedIn()
+					&& !(userBean.getUser().getUsergroup() == 1)
 					&& (onAdminPage || onAzurirajDestinacijuPage
 							|| onDestinacijePage
 							|| onDestinacijePoMjesecimaPage
@@ -66,10 +66,9 @@ public class AuthPhaseListener implements PhaseListener {
 				event.getFacesContext()
 						.getApplication()
 						.getNavigationHandler()
-						.handleNavigation(event.getFacesContext(), null,
-								"registrovani");
+						.handleNavigation(event.getFacesContext(), null, "registrovani");
 			}
-		}
+		}*/
 	}
 
 	public void beforePhase(PhaseEvent event) {

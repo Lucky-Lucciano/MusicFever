@@ -3,10 +3,11 @@ package net.etfbl.musicfever.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 
-import net.etfbl.musicfever.dto.Song;
 import net.etfbl.musicfever.dto.User; 
 import net.etfbl.musicfever.dao.UserDAO;
 
@@ -19,16 +20,58 @@ public class UserBean implements Serializable {
 	private User userDelete = new User();
 	private User userSelected = new User();
 	private boolean loggedIn = false;
+	private int approveUserId = -1;
+	private int upgradeUserId = -1;
 
 	// Setuje se samo active na false i prikaze BUBBLE meesage ako je uspjesno
-	public void deleteUser() {
-		
+	public String deleteUser() {
+		if(UserDAO.deleteUser(userDelete)){
+			userDelete = new User();
+			String messageSuccess = "User deleted succesfully!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return "";
+		} else {
+			userDelete = new User();
+			String messageFailure = "User couldn't be deleted!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
 	}
 	
-	public String updateUser() {
+	public String approveUser() {
 		// U sluacju da ne uspije, kroz growl ispsiati gresku, inace refresh
-		UserDAO.approveUser(userSelected);
-		return "";
+		if(UserDAO.approveUser(approveUserId)) {
+			approveUserId = -1;
+			String messageSuccess = "User succesfully approved!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return "";
+		} else {
+			approveUserId = -1;
+			String messageFailure = "Approvemnet failed!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
+	public String upgradeToSuperuser() {
+		// U sluacju da ne uspije, kroz growl ispsiati gresku, inace refresh
+		if(UserDAO.upgradeToSuperuser(upgradeUserId)) {
+			upgradeUserId = -1;
+			String messageSuccess = "User upgraded succesfully!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return "";
+		} else {
+			upgradeUserId = -1;
+			String messageFailure = "Upgrade failed!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
 	}
 	
 	public ArrayList<User> getAllUsers() {
@@ -70,6 +113,11 @@ public class UserBean implements Serializable {
 		loggedIn = false;
 		return "index?faces-redirect=true";
 	}
+	
+	public void addMessage(String summary) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
 
 	public User getUser() {
 		return user;
@@ -109,5 +157,21 @@ public class UserBean implements Serializable {
 
 	public void setUserSelected(User userSelected) {
 		this.userSelected = userSelected;
+	}
+
+	public int getApproveUserId() {
+		return approveUserId;
+	}
+
+	public void setApproveUserId(int approveUserId) {
+		this.approveUserId = approveUserId;
+	}
+
+	public int getUpgradeUserId() {
+		return upgradeUserId;
+	}
+
+	public void setUpgradeUserId(int upgradeUserId) {
+		this.upgradeUserId = upgradeUserId;
 	}
 }

@@ -12,9 +12,12 @@ import net.etfbl.musicfever.dao.DAOUtil;
 
 public class UserDAO {
 	private static final String SQL_LOGIN = "SELECT * FROM user WHERE username = ? and password = md5(?) limit 1";
-	private static final String SQL_ADD_USER = "INSERT INTO users(username, password, name, surname, email, usergroup, JMBG, registration_date, active, approved, superuser, image) values(?, md5(?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
+	private static final String SQL_ADD_USER = "INSERT INTO user(username, password, name, surname, email, usergroup, JMBG, registration_date, active, approved, superuser, image) values(?, md5(?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
+	private static final String SQL_UPDATE_USER = "UPDATE user SET name=?, surname=?, email=?, JMBG=?, image=? WHERE id=?";
 	private static final String SQL_APPROVE_USER = "UPDATE user SET approved = 1 WHERE id=?";
-	private static final String SQL_ALL_USERS = "SELECT * FROM user WHERE usergroup=0";
+	private static final String SQL_DELETE_USER = "UPDATE user SET active=0 WHERE id=?";
+	private static final String SQL_UPGRADE_TO_SUPERUSER = "UPDATE user SET superuser=1 WHERE id=?";
+	private static final String SQL_ALL_USERS = "SELECT * FROM user WHERE usergroup=0 AND active=1";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
 	
 	// Ajaxom se moze provjeriti je l dostupno - ako ne bude vremena izbaciti
@@ -43,9 +46,9 @@ public class UserDAO {
 	}
 	
 	
-	public static boolean approveUser(User user) {
+	public static boolean approveUser(int userID) {
 		Connection connection = null;
-		Object values[] = {user.getId()};
+		Object values[] = {userID};
 		
 		try {
 			connection = ConnectionPool.getConnectionPool().checkOut();
@@ -61,13 +64,13 @@ public class UserDAO {
 		}
 	}
 	
-	public static void updateUser(User user) {
-		/*Connection connection = null;
+	public static boolean deleteUser(User user) {
+		Connection connection = null;
 		Object values[] = {user.getId()};
 		
 		try {
 			connection = ConnectionPool.getConnectionPool().checkOut();
-			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_APPROVE_USER, false, values);
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_DELETE_USER, false, values);
 			pstmt.executeUpdate();
 			pstmt.close();
 			return true;
@@ -76,7 +79,52 @@ public class UserDAO {
 			return false;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);
-		}*/
+		}
+	}
+	
+	public static boolean upgradeToSuperuser(int userID) {
+		Connection connection = null;
+		Object values[] = {userID};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_UPGRADE_TO_SUPERUSER, false, values);
+			pstmt.executeUpdate();
+			pstmt.close();
+			return true;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return false;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+	}
+	
+	public static boolean updateUser(User user) {
+		Connection connection = null;
+		boolean retVal = false;
+		String profileImage = user.getProfileImage().matches("") ? "http://3.bp.blogspot.com/-2uL3QmmToWI/Uia-0cvD7YI/AAAAAAAABBQ/ICJLdNIXHMQ/s1600/facebook-default--profile-pic2.jpg" : user.getProfileImage();
+		Object[] values = {user.getName(), user.getSurname(), user.getEmail(), user.getJMBG(), profileImage, user.getId()};
+
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement ps = DAOUtil.prepareStatement(connection, SQL_UPDATE_USER, false, values);
+			int rez = ps.executeUpdate();
+			if (rez == 0) {
+				retVal = false;
+				System.out.println("Couldn't update user");
+			} else {
+				retVal = true;
+				System.out.println("User updated");
+			}
+			ps.close();
+			return retVal;
+		} catch (SQLException e) {
+			System.out.println("Registration exception " + e);
+			return retVal;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
 	}
 	
 	public static boolean addUser(User user) {

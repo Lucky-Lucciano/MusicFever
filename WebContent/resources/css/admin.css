@@ -1,0 +1,10 @@
+.center-content {
+	margin: 0 auto;
+	display: block;
+}
+
+.center-content-anchor{
+	margin: 0 auto;
+	display: block;
+	width: 70px;
+}

@@ -1,8 +1,11 @@
 package net.etfbl.musicfever.dto;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -95,8 +98,10 @@ public class User implements Serializable{
 		this.password = password;
 	}
 
-	public Date getRegistration() {
-		return registration;
+	public String getRegistration() {
+		SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy");
+
+		return sdf.format(registration);
 	}
 
 	public void setRegistration(Date registration) {
@@ -132,7 +137,7 @@ public class User implements Serializable{
 	}
 
 	public void setJMBG(String jMBG) {
-		JMBG = jMBG;
+		this.JMBG = jMBG;
 	}
 
 	public String getProfileImage() {

@@ -12,9 +12,7 @@
 			<!--   Napraviti lightbox unos?     -->
         	<p:commandButton value="Add" icon="ui-icon-plus" style="margin-bottom: 10px" ></p:commandButton>            
             <h:form id="form">
-			    
-			 
-			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}">
+			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}" style="text-align: center">
 			        <f:facet name="header">
 			            Users
 			        </f:facet>
@@ -44,7 +42,7 @@
 			            	<f:setPropertyActionListener value="#{user}" target="#{userBean.userDelete}" />
 			            </p:commandLink>
 			        </p:column>
-			        <p:column style="width:32px;text-align: center" headerText="Details">
+			        <p:column style="width:60px" headerText="Details">
 			             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit">
 			                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" />
 			            </p:commandButton>

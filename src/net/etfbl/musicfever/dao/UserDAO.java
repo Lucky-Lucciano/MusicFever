@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import net.etfbl.musicfever.dao.ConnectionPool;
 import net.etfbl.musicfever.dto.User;
@@ -170,7 +171,7 @@ public class UserDAO {
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
 				rez.add(new User(rs.getInt(1), rs.getInt(7), rs.getInt(10) == 1, rs.getInt(11) == 1, rs.getInt(12) == 1, rs.getString(2),
-									rs.getString(3), rs.getDate(9), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(12), rs.getString(13)));
+									rs.getString(3), rs.getDate(9), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(8), rs.getString(13)));
 			}			
 			rs.close();
 			pstmt.close();

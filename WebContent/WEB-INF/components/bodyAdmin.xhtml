@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
@@ -53,4 +54,63 @@
         	
         </ui:composition>
     </h:body>
+=======
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+        <p:growl id="msgs" life="4000"/>
+        <div class="content">
+			<!--   Napraviti lightbox unos?     -->
+        	<p:commandButton value="Add" icon="ui-icon-plus" style="margin-bottom: 10px" ></p:commandButton>            
+            <h:form id="form">
+			    
+			 
+			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}">
+			        <f:facet name="header">
+			            Users
+			        </f:facet>
+			        <p:column headerText="Username">
+			            <h:outputText value="#{user.username}" />
+			        </p:column>
+			        <p:column headerText="Super User">
+			        	<h:graphicImage rendered="#{user.superuser}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
+			            <p:commandLink rendered="#{!user.superuser}" ajax="false" update="msgs" action="#{userBean.upgradeToSuperuser}" value="Upgrade" styleClass="center-content-anchor">
+			            	<f:setPropertyActionListener value="#{user.id}" target="#{userBean.upgradeUserId}" />
+			            </p:commandLink>
+			        </p:column>
+			        <p:column headerText="Activate">
+			        	<h:graphicImage rendered="#{user.approved}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
+			            <p:commandLink rendered="#{!user.approved}" ajax="false" update="msgs" action="#{userBean.approveUser}" value="Approve" styleClass="center-content-anchor">
+			            	<f:setPropertyActionListener value="#{user.id}" target="#{userBean.approveUserId}" />
+			            </p:commandLink>
+			        </p:column>
+			        <p:column headerText="E-mail">
+			            <h:outputText value="#{user.email}" />
+			        </p:column>
+			        <p:column headerText="Registration date">
+			            <h:outputText value="#{user.registration}" />
+			        </p:column>
+			        <p:column headerText="Delete">
+			            <p:commandLink ajax="false" update="msgs" action="#{userBean.deleteUser}" value="Delete" styleClass="center-content-anchor">
+			            	<f:setPropertyActionListener value="#{user}" target="#{userBean.userDelete}" />
+			            </p:commandLink>
+			        </p:column>
+			        <p:column style="width:32px;text-align: center" headerText="Details">
+			             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit">
+			                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" />
+			            </p:commandButton>
+			        </p:column>
+			    </p:dataTable>
+		    </h:form>         
+        </div>
+        	
+        </ui:composition>
+    </h:body>
+>>>>>>> branch 'master' of https://github.com/AysCold/MusicFever.git
 </html>

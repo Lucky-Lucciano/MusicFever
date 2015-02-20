@@ -120,7 +120,7 @@ public class UserDAO {
 			ps.close();
 			return retVal;
 		} catch (SQLException e) {
-			System.out.println("Registration exception " + e);
+			System.out.println("Update exception " + e);
 			return retVal;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);

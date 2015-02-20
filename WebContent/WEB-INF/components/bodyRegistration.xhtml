@@ -1,0 +1,76 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head />
+    <ui:composition>
+    	<p:growl id="msgs" life="4000"/>
+    	<h:form styleClass="content">
+	     	<div class="text-block" id="top">  
+				<h1>Registration</h1>
+			</div>
+			<ul class="list-form">
+				<li class="clearfix">
+					<label>Name</label>
+					<div class="entry">
+						<div class="warning-cont" style="width: 210px">
+							<p:inputText placeholder="First name" value="#{userBean.userAdd.name}" styleClass="searchInput"></p:inputText>
+						</div>
+						<div class="warning-cont" style="width: 200px">
+							<p:inputText placeholder="Last name" value="#{userBean.userAdd.surname}" styleClass="searchInput"></p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="Email">E-mail</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText value="#{userBean.userAdd.email}" styleClass="searchInput long"></p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="UserName">Username</label>
+					<div class="entry username">
+						<div class="warning-cont">
+							<p:inputText value="#{userBean.userAdd.username}" styleClass="searchInput long" required="true" >
+								<f:validateLength minimum="12"></f:validateLength>
+								<f:validateRegex pattern="^[^@#/]+$" />
+							</p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="Password">Password</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:password value="#{userBean.userAdd.password}" styleClass="searchInput long"></p:password>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="JMBG">JMBG</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText value="#{userBean.userAdd.JMBG}" styleClass="searchInput long" required="true">
+								<f:validateLength minimum="13" maximum="13"></f:validateLength>
+							</p:inputText>
+						</div>
+					</div>
+				</li>
+				<li class="clearfix">
+					<label for="picture">Profile image</label>
+					<div class="entry">
+						<div class="warning-cont">
+							<p:inputText placeholder="Picture URL" value="#{userBean.userAdd.profileImage}" styleClass="searchInput long"></p:inputText>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<p:commandButton action="#{userBean.addUser}" update="msgs" value="Sign Up!" title="Register" ajax="false" style="margin: 10px 0 25px 210px;">
+<!--                 <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" /> -->
+            </p:commandButton>
+     	</h:form>
+    </ui:composition>    
+</html>

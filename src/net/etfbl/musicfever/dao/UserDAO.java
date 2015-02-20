@@ -127,9 +127,8 @@ public class UserDAO {
 		}
 	}
 	
-	public static boolean addUser(User user) {
+	public static User addUser(User user) {
 		Connection connection = null;
-		boolean retVal = false;
 		ResultSet generatedKeys = null;
 		String profileImage = user.getProfileImage().matches("") ? "http://3.bp.blogspot.com/-2uL3QmmToWI/Uia-0cvD7YI/AAAAAAAABBQ/ICJLdNIXHMQ/s1600/facebook-default--profile-pic2.jpg" : user.getProfileImage();
 		Object[] values = {user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.getEmail(), 0, user.getJMBG(), 1, 0, 0, profileImage};
@@ -139,12 +138,11 @@ public class UserDAO {
 			PreparedStatement ps = DAOUtil.prepareStatement(connection, SQL_ADD_USER, true, values);
 			int rez = ps.executeUpdate();
 			if (rez == 0) {
-				retVal = false;
+				user = null;
 				System.out.println("Couldnt add user");
 			} else {
-				retVal = true;
 				generatedKeys = ps.getGeneratedKeys();
-				System.out.println("Added user");
+				System.out.println("User added");
 				//Povratni info za ID
 				if (generatedKeys.next()) {
 					user.setId(generatedKeys.getInt(1));
@@ -153,11 +151,11 @@ public class UserDAO {
 			ps.close();
 		} catch (SQLException e) {
 			System.out.println("Registration exception " + e);
-			retVal = false;
+			return null;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);
 		}
-		return retVal;
+		return user;
 	}
 	
 	// vraca sve registrovane korsinike

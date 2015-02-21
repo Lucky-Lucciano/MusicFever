@@ -23,7 +23,22 @@ public class UserBean implements Serializable {
 	private int approveUserId = -1;
 	private int upgradeUserId = -1;
 
-	// Setuje se samo active na false i prikaze BUBBLE meesage ako je uspjesno
+	
+	public String updateUser() {
+		if(UserDAO.updateUser(userSelected)){
+			String messageSuccess = "User info updated!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return "";
+		} else {
+			userDelete = new User();
+			String messageFailure = "Failed to update user info!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
 	public String deleteUser() {
 		if(UserDAO.deleteUser(userDelete)){
 			userDelete = new User();
@@ -119,10 +134,13 @@ public class UserBean implements Serializable {
 			
 			return site;
 		}
-		System.out.println("Nije ulogovan");
 		user = new User();
 		loggedIn = false;
-		return "index?faces-redirect=true";
+		String messageFailure = "Login failed!";
+		System.out.println(messageFailure);
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, messageFailure,  null);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+		return "";
 	}
 	
 	public String logout() {

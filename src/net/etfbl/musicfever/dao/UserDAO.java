@@ -12,7 +12,7 @@ import net.etfbl.musicfever.dto.User;
 import net.etfbl.musicfever.dao.DAOUtil;
 
 public class UserDAO {
-	private static final String SQL_LOGIN = "SELECT * FROM user WHERE username = ? and password = md5(?) limit 1";
+	private static final String SQL_LOGIN = "SELECT * FROM user WHERE username = ? AND password = md5(?) AND active=1 AND approved=1 limit 1";
 	private static final String SQL_ADD_USER = "INSERT INTO user(username, password, name, surname, email, usergroup, JMBG, registration_date, active, approved, superuser, image) values(?, md5(?), ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
 	private static final String SQL_UPDATE_USER = "UPDATE user SET name=?, surname=?, email=?, JMBG=?, image=? WHERE id=?";
 	private static final String SQL_APPROVE_USER = "UPDATE user SET approved = 1 WHERE id=?";
@@ -121,7 +121,7 @@ public class UserDAO {
 			ps.close();
 			return retVal;
 		} catch (SQLException e) {
-			System.out.println("Registration exception " + e);
+			System.out.println("User update exception " + e);
 			return retVal;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);

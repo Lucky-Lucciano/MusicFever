@@ -5,8 +5,11 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head />
     <ui:composition>
+    	<p:growl id="msgs" life="4000"/>
+    	
     	<h:form styleClass="content">
-	     	<div class="text-block" id="top">  
+	     	<div class="text-block" id="top">
+	     		<h:link value="&lt;- back to Admin" outcome="admin" styleClass="signup-button" style="position:relative; background-color:black" />
 				<h1>Account Settings</h1>
 				<ul class="navlist clearfix">
 					<li class="active"><a href="#">General</a></li>
@@ -16,6 +19,14 @@
 				 </ul>
 			</div>
 			<ul class="list-form">
+				<li class="clearfix">
+					<label for="UserName">Username</label>
+					<div class="entry username">
+						<div class="warning-cont">
+							<p:inputText value="#{userBean.userSelected.username}" styleClass="searchInput long" disabled="true"></p:inputText>
+						</div>
+					</div>
+				</li>
 				<li class="clearfix">
 					<label>Name</label>
 					<div class="entry">
@@ -35,14 +46,7 @@
 						</div>
 					</div>
 				</li>
-				<li class="clearfix">
-					<label for="UserName">Username</label>
-					<div class="entry username">
-						<div class="warning-cont">
-							<p:inputText value="#{userBean.userSelected.username}" styleClass="searchInput long" disabled="true"></p:inputText>
-						</div>
-					</div>
-				</li>
+				
 <!-- 				<li class="clearfix"> -->
 <!-- 					<label for="Password">Password</label> -->
 <!-- 					<div class="entry"> -->
@@ -68,7 +72,7 @@
 					</div>
 				</li>
 			</ul>
-			<p:commandButton value="Save" actionListener="#{userBean.updateUser}" ajax="false" style="margin: 10px 0 25px 210px;"/>
+			<p:commandButton value="Save" actionListener="#{userBean.updateUser}" ajax="false" style="margin: 10px 0 25px 210px;" update="msgs"/>
      	</h:form>
     </ui:composition>    
 </html>

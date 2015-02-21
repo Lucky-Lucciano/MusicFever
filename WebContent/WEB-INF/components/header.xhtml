@@ -7,6 +7,7 @@
     <h:head/>
     <h:body>
         <ui:composition>
+        	<p:growl id="logInformation" life="6000" />
         	<h:outputStylesheet library="css" name="header.css"></h:outputStylesheet>            
 			<div id="header">
 				<div style = "margin: 0 auto; width: 1300px;">
@@ -24,6 +25,7 @@
 						    </h:outputLink>
 						 
 						    <p:dialog header="Login" widgetVar="dlg" resizable="false">
+						    	
 						        <h:panelGrid columns="2" cellpadding="5" style="z-index: 1001">
 						            <h:outputLabel for="username" value="Username:" />
 						            <p:inputText id="username" value="#{userBean.user.username}" required="true" label="username" />
@@ -32,7 +34,7 @@
 						            <p:password id="password" value="#{userBean.user.password}" required="true" label="password" />
 						 
 						            <f:facet name="footer">
-						                <p:commandButton value="Login" action="#{userBean.login}" />
+						                <p:commandButton value="Login" action="#{userBean.login}" update=":#{p:component('logInformation')}"/>
 						            </f:facet>  
 						        </h:panelGrid>
 						    </p:dialog>

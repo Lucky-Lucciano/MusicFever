@@ -7,57 +7,70 @@
     <h:head/>
     <h:body>
         <ui:composition>
-	        <p:growl id="msgs" life="4000"/>
+	        <p:growl id="msgsGen" life="4000"/>
 	        
 	        <div class="content">
-				<!--   Napraviti lightbox unos?     -->
 				<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
 					<li><h:link value="Users" outcome="admin"/></li>
 					<li class="active"><h:link value="Genres" outcome="admin-genre"/></li>
 					<li><h:link value="Events" outcome="admin-event"/></li>
 				</ul>
 				<h:panelGroup>
-					<p:commandButton value="Add Genre" icon="ui-icon-plus" style="float:right" ></p:commandButton>  
+					<p:commandButton value="Add Genre" onclick="PF('addGenreDlg').show();" icon="ui-icon-plus" style="float:right" type="button"></p:commandButton>  
 				</h:panelGroup>   
 	            <h:form id="form">
-				    <p:dataTable id="basicDT" var="genre" value="#{genreBean.allGenres}" style="text-align: center">
+				    <p:dataTable id="genreDT" var="genre" value="#{genreBean.allGenres}" style="text-align: center">
 				        <f:facet name="header">
 				            Genres
 				        </f:facet>
+				        <p:column headerText="ID" style="width:60px">
+				            <h:outputText value="#{genre.id}" />
+				        </p:column>
 				        <p:column headerText="Name">
 				            <h:outputText value="#{genre.name}" />
 				        </p:column>
 				        <p:column headerText="Delete">
-				            <p:commandLink ajax="false" update="msgs" action="#{genreBean.removeGenre}" value="Delete" styleClass="center-content-anchor">
+				            <p:commandLink update=":#{p:component('msgsGen')} :form:genreDT" action="#{genreBean.removeGenre}" oncomplete="PF('genreWind').hide();"  value="Delete" styleClass="center-content-anchor">
 				            	<f:setPropertyActionListener value="#{genre}" target="#{genreBean.genreDelete}" />
+				            	<p:confirm header="Confirmation"  icon="ui-icon-alert" />
 				            </p:commandLink>
 				        </p:column>
-				        <p:column style="width:60px" headerText="Edit">
-<!-- 				             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit"> -->
-<!-- 				                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" /> -->
-<!-- 				            </p:commandButton> -->
+				        <p:column style="width:60px" headerText="Edit">				           
+			           		 <p:commandButton update=":form:genreDetail" action="#{genreBean.outcome}" oncomplete="PF('genreWind').show();" icon="ui-icon-pencil" title="Edit">
+				                <f:setPropertyActionListener value="#{genre}" target="#{genreBean.genre}"  />
+				            </p:commandButton>
+			            </p:column>
+     				</p:dataTable>    
+     				
+				    <p:dialog header="Edit Genre" widgetVar="genreWind" resizable="false"  modal="true"> 
+				        <h:panelGrid id="genreDetail" columns="2" cellpadding="5">
+				            <h:outputLabel for="genreName" value="Name: " />
+				            <p:inputText id="genreName" value="#{genreBean.genre.name}" />
 				            
-				            <div style="display: inline-block">  
-					            <p:commandButton onclick="PF('dlg').show();" icon="ui-icon-pencil" title="Edit">
-<!-- 					                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" /> -->
-					            </p:commandButton>          
-							 
-							    <p:dialog header="Edit Genre" widgetVar="dlg" resizable="false">
-							    	
-							        <h:panelGrid columns="2" cellpadding="4" style="z-index: 1001">
-							            <h:outputLabel for="name" value="Name: " />
-							            <p:inputText id="name" value="#{genre.name}" required="true" label="name" />
-							 
-							            <f:facet name="footer">
-							                <p:commandButton value="Save" action="#{genreBean.editGenre}" update=":#{p:component('msgs')}"/>
-								                <f:setPropertyActionListener value="#{genre}" target="#{genreBean.genre}" />
-								            </p:commandButton>
-							            </f:facet>  
-							        </h:panelGrid>
-							    </p:dialog>
-							</div>
-				        </p:column>
-				    </p:dataTable>
+				            <f:facet name="footer">
+				                <p:commandButton value="Save" action="#{genreBean.editGenre}" update=":#{p:component('msgsGen')} :form:genreDT" oncomplete="PF('genreWind').hide()"/>
+				            </f:facet>  
+				        </h:panelGrid>
+				    </p:dialog>
+				    
+				    <p:dialog header="Add genre" widgetVar="addGenreDlg" modal="true" resizable="false">
+				        <h:panelGrid columns="2" cellpadding="5">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{genreBean.genreAdd.name}" label="name"/>
+				 
+				            <f:facet name="footer">
+				                <p:commandButton value="Add" action="#{genreBean.addNewGenre}" update=":#{p:component('msgsGen')} :form:genreDT" oncomplete="PF('addGenreDlg').hide()"/>
+				            </f:facet>  
+				        </h:panelGrid>
+				    </p:dialog>
+				    
+				    <p:confirmDialog global="true" showEffect="fade">
+				    	<f:facet name="message">
+				    		<h:outputText value="Delete genre ?" ></h:outputText>
+				    	</f:facet>
+				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
 			    </h:form>         
 	        </div>
         	

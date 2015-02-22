@@ -19,7 +19,7 @@
 <!-- 				<p:commandButton value="Add" icon="ui-icon-plus" style="margin-bottom: 10px" ></p:commandButton>   -->
 <!-- 			</h:panelGroup>           -->
             <h:form id="form">
-			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}" style="text-align: center">
+			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}" style="text-align: center" rows="10" paginator="true" paginatorPosition="bottom">
 			        <f:facet name="header">
 			            Users
 			        </f:facet>

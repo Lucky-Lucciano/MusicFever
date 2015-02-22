@@ -19,6 +19,7 @@ public class UserDAO {
 	private static final String SQL_DELETE_USER = "UPDATE user SET active=0 WHERE id=?";
 	private static final String SQL_UPGRADE_TO_SUPERUSER = "UPDATE user SET superuser=1 WHERE id=?";
 	private static final String SQL_ALL_USERS = "SELECT * FROM user WHERE usergroup=0 AND active=1";
+	private static final String SQL_EMAIL_FROM_ALL_REGISTERED_USERS = "SELECT email FROM user WHERE usergroup=0 AND active=1";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
 	
 	// Ajaxom se moze provjeriti je l dostupno - ako ne bude vremena izbaciti
@@ -159,7 +160,6 @@ public class UserDAO {
 		return user;
 	}
 	
-	// vraca sve registrovane korsinike
 	public static ArrayList<User> getAllUsers() {
 		Connection connection = null;
 		ArrayList<User> rez = new ArrayList<User>();
@@ -172,6 +172,29 @@ public class UserDAO {
 			while(rs.next()) {
 				rez.add(new User(rs.getInt(1), rs.getInt(7), rs.getInt(10) == 1, rs.getInt(11) == 1, rs.getInt(12) == 1, rs.getString(2),
 									rs.getString(3), rs.getDate(9), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(8), rs.getString(13)));
+			}			
+			rs.close();
+			pstmt.close();
+			return rez;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return rez;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);			
+		}
+	}
+	
+	public static ArrayList<String> getAllEmailsFromRegUsers() {
+		Connection connection = null;
+		ArrayList<String> rez = new ArrayList<String>();
+		Object values[] = {};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_EMAIL_FROM_ALL_REGISTERED_USERS, false, values);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				rez.add(rs.getString(1));
 			}			
 			rs.close();
 			pstmt.close();

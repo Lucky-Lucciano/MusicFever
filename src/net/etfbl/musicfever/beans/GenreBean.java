@@ -25,12 +25,10 @@ public class GenreBean implements Serializable {
 	
 	//Samo admin ima pristup upravljanja ovim podacima
 	public ArrayList<Genre> getAllGenres() {
-//		userSelected = new User();
 		return GenreDAO.getAllGenres();
 	}
 	
 	public String removeGenre() {
-		System.out.println("usao u remove");
 		if(GenreDAO.deleteGenre(genreDelete)){
 			genreDelete = new Genre();
 			String messageSuccess = "Genre deleted succesfully!";
@@ -48,14 +46,30 @@ public class GenreBean implements Serializable {
 	
 	public String editGenre() {
 		if(GenreDAO.updateGenre(genre)){
-			genreDelete = new Genre();
+			genre = new Genre();
 			String messageSuccess = "Genre updated succesfully!";
 			System.out.println(messageSuccess);
 			addMessage(messageSuccess);
-			return "";
+			return " ";
 		} else {
-			genreDelete = new Genre();
+			genre = new Genre();
 			String messageFailure = "Genre couldn't be updated!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
+	public String addNewGenre() {
+		if(GenreDAO.addGenre(genreAdd)){
+			genreAdd = new Genre();
+			String messageSuccess = "Genre added succesfully!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return " ";
+		} else {
+			genreAdd = new Genre();
+			String messageFailure = "Genre couldn't be added!";
 			System.out.println(messageFailure);
 			addMessage(messageFailure);
 			return null;
@@ -66,6 +80,10 @@ public class GenreBean implements Serializable {
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary,  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
+	
+	public void outcome(){
+		System.out.println("Edit clicked");
+	}
 
 	public Genre getGenre() {
 		return genre;

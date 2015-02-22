@@ -7,57 +7,78 @@
     <h:head/>
     <h:body>
         <ui:composition>
-        <p:growl id="msgs" life="4000"/>
-        <div class="content">
-			<!--   Napraviti lightbox unos?     -->
-			<ul class="navlist clearfix">
-				<li class="active"><h:link value="Users" outcome="admin"/></li>
-				<li><h:link value="Genres" outcome="admin-genre"/></li>
-				<li><h:link value="Events" outcome="admin-event"/></li>
-			</ul>
-<!-- 			<h:panelGroup > -->
-<!-- 				<p:commandButton value="Add" icon="ui-icon-plus" style="margin-bottom: 10px" ></p:commandButton>   -->
-<!-- 			</h:panelGroup>           -->
-            <h:form id="form">
-			    <p:dataTable id="basicDT" var="user" value="#{userBean.allUsers}" style="text-align: center">
-			        <f:facet name="header">
-			            Users
-			        </f:facet>
-			        <p:column headerText="Username">
-			            <h:outputText value="#{user.username}" />
-			        </p:column>
-			        <p:column headerText="Super User">
-			        	<h:graphicImage rendered="#{user.superuser}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
-			            <p:commandLink rendered="#{!user.superuser}" ajax="false" update="msgs" action="#{userBean.upgradeToSuperuser}" value="Upgrade" styleClass="center-content-anchor">
-			            	<f:setPropertyActionListener value="#{user.id}" target="#{userBean.upgradeUserId}" />
-			            </p:commandLink>
-			        </p:column>
-			        <p:column headerText="Activate">
-			        	<h:graphicImage rendered="#{user.approved}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
-			            <p:commandLink rendered="#{!user.approved}" ajax="false" update="msgs" action="#{userBean.approveUser}" value="Approve" styleClass="center-content-anchor">
-			            	<f:setPropertyActionListener value="#{user.id}" target="#{userBean.approveUserId}" />
-			            </p:commandLink>
-			        </p:column>
-			        <p:column headerText="E-mail">
-			            <h:outputText value="#{user.email}" />
-			        </p:column>
-			        <p:column headerText="Registration date">
-			            <h:outputText value="#{user.registration}" />
-			        </p:column>
-			        <p:column headerText="Delete">
-			            <p:commandLink ajax="false" update="msgs" action="#{userBean.deleteUser}" value="Delete" styleClass="center-content-anchor">
-			            	<f:setPropertyActionListener value="#{user}" target="#{userBean.userDelete}" />
-			            </p:commandLink>
-			        </p:column>
-			        <p:column style="width:60px" headerText="Details">
-			             <p:commandButton action="account.html?faces-redirect=true" oncomplete="PF('userDialog').show()" icon="ui-icon-pencil" title="Edit">
-			                <f:setPropertyActionListener value="#{user}" target="#{userBean.userSelected}" />
-			            </p:commandButton>
-			        </p:column>
-			    </p:dataTable>
-		    </h:form>         
-        </div>
-        	
+	        <div class="content">
+				<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+					<li><h:link value="Users" outcome="admin"/></li>
+					<li><h:link value="Genres" outcome="admin-genre"/></li>
+					<li class="active"><h:link value="Events" outcome="admin-event"/></li>
+				</ul>
+				<h:form id="form" style="float:right; display: inline-block;">
+					<p:growl id="msgs" life="4000" showDetail="true"/>
+					<h:panelGroup>
+						<p:commandButton value="Add Event" onclick="PF('addEventDlg').show();" icon="ui-icon-plus"  type="button"></p:commandButton>  
+					</h:panelGroup>    
+					
+					<p:dialog header="Add event" widgetVar="addEventDlg" modal="true" resizable="false">
+				        <h:panelGrid columns="2" cellpadding="5">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{eventBean.eventAdd.name}" label="name" />
+				            
+				            <h:outputLabel for="location" value="Location:" />
+				            <p:inputText id="location" value="#{eventBean.eventAdd.location}" label="location" />
+				            
+				            <p:outputLabel for="datetime" value="Start Time" />
+        					<p:calendar id="datetime" value="#{eventBean.eventAdd.startTime}" pattern="MM/dd/yyyy HH:mm:ss" />
+				 
+				            <f:facet name="footer">
+				                <p:commandButton value="Add" action="#{eventBean.addNewEvent}" update="msgs :eventForm:eventsDT" oncomplete="PF('addEventDlg').hide()">
+				                	<f:setPropertyActionListener value="#{userBean.user.id}" target="#{eventBean.userCreatorId}" />
+				                </p:commandButton>
+				            </f:facet>  
+				        </h:panelGrid>
+				     </p:dialog>
+				    
+				     <p:confirmDialog global="true" showEffect="fade">
+				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+			    </h:form>              
+	            
+	            	
+	            <h:form id="eventForm">
+	            	<p:dataTable id="eventsDT" var="event" value="#{eventBean.allEvents}" style="text-align: center">
+				        <f:facet name="header">
+				            Events
+				        </f:facet>
+				        <p:column headerText="Name">
+				            <h:outputText value="#{event.name}" />
+				        </p:column>
+				        <p:column headerText="Activate">
+				        	<h:graphicImage rendered="#{event.approved}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
+				            <p:commandLink rendered="#{!event.approved}" update=":form:msgs :eventForm:eventsDT" action="#{eventBean.approveEvent}" value="Approve" styleClass="center-content-anchor">
+				            	<f:setPropertyActionListener value="#{event}" target="#{eventBean.eventToBeApproved}" />
+				            	<p:confirm header="Confirmation" message="Approve event?" icon="ui-icon-alert" />
+				            </p:commandLink>
+				        </p:column>
+				        <p:column headerText="Start Time">
+				            <h:outputText value="#{event.startTime}" />
+				        </p:column>
+				        <p:column headerText="Location">
+				            <h:outputText value="#{event.location}" />
+				        </p:column>
+				        <p:column headerText="Created">
+				            <h:outputText value="#{event.creationTime}" />
+				        </p:column>
+				        <p:column headerText="Delete">
+				            <p:commandLink ajax="false" update=":form:msgs" action="#{eventBean.removeEvent}" value="Delete" styleClass="center-content-anchor">
+				            	<f:setPropertyActionListener value="#{event}" target="#{eventBean.eventDelete}" />
+				            	<p:confirm header="Confirmation" message="Delete event?" icon="ui-icon-alert" />
+				            </p:commandLink>
+				        </p:column>
+				    </p:dataTable>
+	            </h:form>
+	        </div>
+	        	
         </ui:composition>
     </h:body>
 </html>

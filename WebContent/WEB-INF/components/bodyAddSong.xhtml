@@ -38,7 +38,7 @@
 						  <label>
 						    <span class="textfield__label g-required-label"> Type </span>
 						    <div class="textfield__inputWrapper" >
-						        <p:selectOneMenu rendered="#{userBean.user.superuser}" id="consoleSuperuser" value="#{songBean.songAdd.fileType}" style="width:125px">
+						        <p:selectOneMenu rendered="#{userBean.user.superuser}" id="consoleSuperuser" value="#{songBean.songAdd.fileType}" style="width:125px" onchange="checkType()">
 						            <f:selectItem itemLabel="Youtube" itemValue="0" />
 						            <f:selectItem itemLabel="SoundCloud" itemValue="1" />
 						            <f:selectItem itemLabel="MP3" itemValue="2" />
@@ -49,7 +49,9 @@
 						            <f:selectItem itemLabel="SoundCloud" itemValue="1" />
 					        	</p:selectOneMenu>
 					        	
-					        	<p:inputText value="#{songBean.songAdd.location}" placeholder="Link" styleClass="textfield__input sc-input sc-input-medium link-correction"></p:inputText>
+					        	<p:inputText value="#{songBean.songAdd.location}" id="songLocation" placeholder="Link" styleClass="textfield__input sc-input sc-input-medium link-correction"></p:inputText>
+								
+								<p:fileUpload value="#{songBean.songAdd.location}" id="songLocationFile" mode="simple" skinSimple="true" style="display:none ; margin-left: 12px;"/>
 							</div>
 						  </label>
 						</div>
@@ -134,5 +136,19 @@
 		        </h:panelGrid>
 		    </p:dialog>
      	</h:form>
-    </ui:composition>    
+     	
+     	<script>
+     		function checkType() {
+     			console.log("checking...");
+     			
+     			if(document.getElementById('form:consoleSuperuser_input').value == 2) {
+     				document.getElementById('form:songLocationFile').style.display='inline-block';
+     				document.getElementById('form:songLocation').style.display='none';
+     			} else {
+     				document.getElementById('form:songLocationFile').style.display='none';
+     				document.getElementById('form:songLocation').style.display='inline-block';
+     			}
+     		}
+     	</script>
+    </ui:composition>
 </html>

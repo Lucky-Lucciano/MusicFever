@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head/>
+    <h:body>
+        <ui:composition template="/WEB-INF/templates/layout.xhtml">            
+            <ui:define name="header">
+                <ui:include src="/WEB-INF/components/header.xhtml"></ui:include>
+            </ui:define>
+            <ui:define name="body">
+                <ui:include src="/WEB-INF/components/bodySongDetails.xhtml"></ui:include> 
+                <h:outputStylesheet library="css" name="account.css"></h:outputStylesheet>
+                <h:outputStylesheet library="css" name="song.css"></h:outputStylesheet>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

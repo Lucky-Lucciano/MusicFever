@@ -13,7 +13,7 @@ public class MainTester {
 		try {
 			Artists art = loc.getArtists();
 			
-			art.getMatchingArtists("ac");
+			art.getMatchingArtists("ni");
 			
 			
 		} catch (Exception exp) {

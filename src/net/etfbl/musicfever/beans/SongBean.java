@@ -1,5 +1,6 @@
 package net.etfbl.musicfever.beans;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,8 +8,13 @@ import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import net.etfbl.artistdb.Artists;
 import net.etfbl.artistdb.ArtistsServiceLocator;
@@ -28,18 +34,24 @@ public class SongBean implements Serializable {
 	private Song songDelete = new Song();
 	private Song songAdd = new Song();
 	private Song songSelected = new Song();
-	private ArtistsServiceLocator loc = new ArtistsServiceLocator();
+
 	private ArrayList<Genre> allGenres = GenreDAO.getAllGenres();
-	private ArrayList<String> secondaryGenres;
+	private ArrayList<String> secondaryGenres = new ArrayList<String>();;
+	private ArrayList<Genre> detailsSecGenres = new ArrayList<Genre>();
+	private ArrayList<Song> latestAddedSongs = new ArrayList<Song>();
+	private ArrayList<Song> searchResults = new ArrayList<Song>();
+	private ArrayList<Song> userSongs = new ArrayList<Song>();
+	private StreamedContent file;
+	private String searchQuery = "";
 	private String primaryGenre = "";
+	private String detailsPrimaryGenre = "";
 	private Date durationTime;
 	private int userId = -1;
-	private String artist;
+	private String artist = "";
 	
 	public String addSong() {
 		System.out.println(songAdd);
 		System.out.println("Other values: primaryGenreA - " + primaryGenre);
-		System.out.println(secondaryGenres.get(1));
 		songAdd.setGenres(convertGenres(primaryGenre, secondaryGenres));
 		System.out.println(songAdd);
 		System.out.println("Other values: primaryGenre - " + primaryGenre);
@@ -61,13 +73,42 @@ public class SongBean implements Serializable {
 		}
 	}
 	
+	public StreamedContent getFile() {
+		try {
+		System.out.println("Unutar fff: " +  songSelected.getId());
+		System.out.println("Unutar det: " +  songSelected.getArtist() + " - " + songSelected.getName() + ".mp3");
+		InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/resources/music/" + songSelected.getId() + ".mp3");
+        file = new DefaultStreamedContent(stream, "audio/mpeg", songSelected.getArtist() + " - " + songSelected.getName() + ".mp3");
+		
+//		InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/resources/img/optimus.jpg");
+//        file = new DefaultStreamedContent(stream, "image/jpg", "downloaded_optimus.jpg");
+        return file;
+		} catch(Exception e) {
+			System.out.println("Prso " + e.getMessage());
+        	e.printStackTrace();
+        	return null;
+        }
+    }
+	
+	
+	public ArrayList<Song> getLatestAddedSongs() {
+		songSelected = new Song();
+		return SongDAO.getLatestAddedSongs();
+	}
 	
 	public void addSongToFavourite() {
 		
 	}
 	
+	public ArrayList<Song> getSearchResults() {
+		ArrayList<Song> res = SongDAO.getMatchingSongs(searchQuery);
+		searchQuery = "";
+		return res;
+	}
+	
 	public String addNewArtist() {
 		try {
+			ArtistsServiceLocator loc = new ArtistsServiceLocator();
 			Artists art = loc.getArtists();
 			
 			if(art.addArtist(artist)) {
@@ -122,16 +163,15 @@ public class SongBean implements Serializable {
 		}
 	}
 	
-	public ArrayList<Song> getAllUsers() {
-		songSelected = new Song();
-		return SongDAO.getAllSongs(userId);
-	}
-	
 	public List<String> completeText(String query) {
 		String[] artistResults = queryMatchingArtist(query);
+//		System.out.println("comp: " + artistResults[0]);
 		List<String> results = new ArrayList<String>();
-        for(int i = 0; i < artistResults.length; i++) {
-            results.add(artistResults[i]);
+		
+		if(artistResults != null) {
+	        for(int i = 0; i < artistResults.length; i++) {
+	            results.add(artistResults[i]);
+	        }
         }
          
         return results;
@@ -169,16 +209,18 @@ public class SongBean implements Serializable {
         for (int i = 0; i < allGenres.size(); i++) {
             Genre gen = allGenres.get(i);
             
-            for (int j = 0; j < secs.size(); j++) {
-            	System.out.println(secs.get(j));
-	            if(gen.getName().toLowerCase().matches(secs.get(j))) {
+            if(secs != null) {
+	            for (int j = 0; j < secs.size(); j++) {
+	            	System.out.println(secs.get(j));
+		            if(gen.getName().toLowerCase().matches(secs.get(j))) {
+		            	retGenres.add(gen);
+		            }
+	            }
+	            
+	            if(gen.getName().toLowerCase().matches(prim.toLowerCase())) {
+	            	gen.setPrimary(true);
 	            	retGenres.add(gen);
 	            }
-            }
-            
-            if(gen.getName().toLowerCase().matches(prim.toLowerCase())) {
-            	gen.setPrimary(true);
-            	retGenres.add(gen);
             }
         }
          
@@ -192,6 +234,7 @@ public class SongBean implements Serializable {
 	
 	public String[] queryMatchingArtist(String query) {
 		try {
+			ArtistsServiceLocator loc = new ArtistsServiceLocator();
 			Artists art = loc.getArtists();
 			
 			return art.getMatchingArtists(query);
@@ -274,5 +317,72 @@ public class SongBean implements Serializable {
 
 	public void setArtist(String artist) {
 		this.artist = artist;
+	}
+
+
+
+	public void setSearchResults(ArrayList<Song> searchResults) {
+		this.searchResults = searchResults;
+	}
+
+
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+
+
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
+	}
+
+
+	public String getDetailsPrimaryGenre() {
+		String rez = "";
+        
+        for (int i = 0; i < songSelected.getGenres().size(); i++) {
+            Genre gen = songSelected.getGenres().get(i);
+            
+            if(gen.isPrimary()) {
+            	rez = gen.getName();
+            }
+        }
+		return rez;
+	}
+
+
+	public void setDetailsPrimaryGenre(String detailsPrimaryGenre) {
+		this.detailsPrimaryGenre = detailsPrimaryGenre;
+	}
+
+
+	public ArrayList<Genre> getDetailsSecGenres() {
+		detailsSecGenres = new ArrayList<Genre>();
+ 
+        for (int i = 0; i < songSelected.getGenres().size(); i++) {
+            Genre gen = songSelected.getGenres().get(i);
+            
+            if(!gen.isPrimary()) {
+            	detailsSecGenres.add(gen);
+            }
+        }
+		return detailsSecGenres;
+	}
+
+
+	public void setDetailsSecGenres(ArrayList<Genre> detailsSecGenres) {
+		this.detailsSecGenres = detailsSecGenres;
+	}
+
+	public ArrayList<Song> getUserSongs() {
+		System.out.println("Adding song to history...: ");
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+		SongDAO.updateHistory(uid, songSelected);
+		return SongDAO.getAllSongs(uid);
+	}
+
+	public void setUserSongs(ArrayList<Song> userSongs) {
+		this.userSongs = userSongs;
 	}
 }

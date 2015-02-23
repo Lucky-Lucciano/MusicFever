@@ -57,11 +57,14 @@
 						</h:form>
 					</h:panelGroup>
 					<div id="searchBox">
-						<p:inputText type="Search" placeholder="Search" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
-<!-- 						<h:outputLink value="index.html" style="display: inline-block;"> -->
-<!-- 							<img id="search-button" src="resources/img/search_button.png"/> -->
-<!-- 						</h:outputLink>  -->
-						<p:commandButton action="add-song.html?faces-redirect=true" rendered="#{userBean.loggedIn == true and userBean.user.usergroup == 0}" value="Add Song" icon="ui-icon-plus" ></p:commandButton>
+						<h:form id="searchForm">
+							<p:inputText value="#{songBean.searchQuery}"  type="Search" placeholder="Search" styleClass="searchInput" style="margin:2px 5px 0 30px; vertical-align: top"></p:inputText>
+	<!-- 						<h:outputLink value="index.html" style="display: inline-block;"> -->
+	<!-- 							<img id="search-button" src="resources/img/search_button.png"/> -->
+	<!-- 						</h:outputLink>  -->
+							<p:commandButton value="" action="search-results.html?faces-redirect=true" class="zeroSize" style="display:none"/>
+						</h:form>
+							<p:commandButton action="add-song.html?faces-redirect=true" rendered="#{userBean.loggedIn == true and userBean.user.usergroup == 0}" value="Add Song" icon="ui-icon-plus" style="float:right; top: -32px"></p:commandButton>
 					</div>
 				</div>
 			</div>          

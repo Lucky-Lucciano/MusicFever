@@ -1,18 +1,70 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+      
     <h:head/>
     <h:body>
-        <ui:composition>            
-           <h:panelGroup layout="block" style="margin-top: 60px">
-				<h:outputLink value="admin.html" styleClass="signup-button" style="position:relative; background-color:black">
-			        <h:outputText value="Admin" />
-			    </h:outputLink>
-				<span class="bullet">•</span>
-				<h:outputLink value="account.html" styleClass="signup-button" style="position:relative; background-color:black">
-			        <h:outputText value="Account" />
-			    </h:outputLink>
-			</h:panelGroup>     
+        <ui:composition>
+<!-- 	        <p:growl id="msgs" life="4000"/> -->
+	    	
+<!-- 	    	<p:layout styleClass="content" style="min-width:400px;min-height:200px;"> -->
+<!-- 			    <p:layoutUnit position="center"> -->
+			       	
+<!-- 			    </p:layoutUnit> -->
+<!-- 			    <p:layoutUnit position="east" size="200" minSize="40" maxSize="400"> -->
+<!-- 			        East -->
+<!-- 			    </p:layoutUnit> -->
+<!-- 			</p:layout> -->
+			
+			
+			<h:form styleClass="content" stlye="width: 870px">
+		     	<div class="text-block" id="top">  
+					<h1 style="font-size: 22px; text-align:left">Registration</h1>
+				</div>
+				<p:dataGrid var="song" value="#{songBean.latestAddedSongs}" columns="3" layout="grid" id="songs" >
+			 
+			        <f:facet name="header">
+			            Recommended songs
+			        </f:facet>
+			 
+			        <p:panel style="text-align:center">
+			            <h:panelGrid columns="1" style="width:100%">
+			                <p:graphicImage width="300" height="225" library="img" name="#{song.fileType}.png"/> 
+			 
+			                <h:outputText value="#{song.name}" />
+			 				
+			 				<h:outputText value="#{song.releaseDate}" >
+			 					<f:convertDateTime pattern="dd MMM yyyy" />
+			 				</h:outputText>
+			 				
+			                <p:commandLink rendered="#{userBean.loggedIn}" title="View Detail" action="song-details.html?faces-redirect=true">
+			                    <h:outputText value="Details" styleClass="ui-icon-arrow-1-e" style="margin:0 auto;" />
+			                    <f:setPropertyActionListener value="#{song}" target="#{songBean.songSelected}" />
+			                </p:commandLink>
+			            </h:panelGrid>
+			        </p:panel>
+			 
+			    </p:dataGrid>
+			</h:form>
+			
+<!-- 			<p:feedReader value="http://www.rollingstone.com/music.rss" var="feed" size="10"> -->
+<!-- 			    <h:outputText value="#{feed.title}" style="font-weight: bold;display:block"/> -->
+<!-- 			    <h:outputText value="#{feed.description.value}" escape="false"/> -->
+<!-- 			    <p:separator /> -->
+<!-- 			</p:feedReader>		 -->
+					
+					
+<!--            <h:panelGroup layout="block" style="margin-top: 60px"> -->
+<!-- 				<h:outputLink value="admin.html" styleClass="signup-button" style="position:relative; background-color:black"> -->
+<!-- 			        <h:outputText value="Admin" /> -->
+<!-- 			    </h:outputLink> -->
+<!-- 				<span class="bullet">•</span> -->
+<!-- 				<h:outputLink value="account.html" styleClass="signup-button" style="position:relative; background-color:black"> -->
+<!-- 			        <h:outputText value="Account" /> -->
+<!-- 			    </h:outputLink> -->
+<!-- 			</h:panelGroup>      -->
         </ui:composition>
     </h:body>
 </html>

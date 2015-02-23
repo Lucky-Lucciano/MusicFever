@@ -10,7 +10,7 @@
         	<p:growl id="logInformation" life="6000" />
         	<h:outputStylesheet library="css" name="header.css"></h:outputStylesheet>            
 			<div id="header">
-				<div style = "margin: 0 auto; width: 1300px;">
+				<div style = "margin: 0 auto; width: 1350px;">
 					<div style = "float: left">
 						<h:outputLink value="index.html" styleClass="logoLink">
 <!-- 					<img id="logo-img" src="resources/img/logo.png" /> -->
@@ -47,13 +47,13 @@
 	<!-- 						</h:outputLink> -->
 	<!-- 					</p:lightBox> -->
 						<span class="bullet">•</span>
-						<h:outputLink value="registration.html?faces-redirect=true" styleClass="signup-button">
-					        <h:outputText value="Sign Up" />
-					    </h:outputLink>
+						<h:link value="Sign Up" outcome="registration" styleClass="signup-button"></h:link>
 					</h:panelGroup>
 					<h:panelGroup rendered="#{userBean.loggedIn}" styleClass="anchors" layout="block"> 
 						<h:form>
-							<h:commandLink action="#{userBean.logout}" value="logout" styleClass="signup-button"></h:commandLink> 
+							<span class="signup-button"> <h:outputText value="Hello, #{userBean.user.username}" /> </span>
+							<span class="bullet">•</span>
+							<h:commandLink action="#{userBean.logout}" value="logout" styleClass="signup-button" style="text-decoration: underline;"></h:commandLink> 
 						</h:form>
 					</h:panelGroup>
 					<div id="searchBox">
@@ -61,7 +61,7 @@
 <!-- 						<h:outputLink value="index.html" style="display: inline-block;"> -->
 <!-- 							<img id="search-button" src="resources/img/search_button.png"/> -->
 <!-- 						</h:outputLink>  -->
-						<p:commandButton value="Search" icon="ui-icon-search" ></p:commandButton>
+						<p:commandButton action="add-song.html?faces-redirect=true" rendered="#{userBean.loggedIn == true and userBean.user.usergroup == 0}" value="Add Song" icon="ui-icon-plus" ></p:commandButton>
 					</div>
 				</div>
 			</div>          

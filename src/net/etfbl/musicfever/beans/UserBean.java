@@ -90,13 +90,21 @@ public class UserBean implements Serializable {
 	}
 	
 	public String addUser() {
-		// U sluacju da ne uspije, kroz growl ispsiati gresku, inace refresh
+		if(!UserDAO.usernameAvailable(userAdd.getUsername())) {
+			String messageFail = "Username is already taken!";
+			System.out.println(messageFail);
+			addMessage(messageFail);
+			
+			return null;
+		}
+		
 		if((user = UserDAO.addUser(userAdd)) != null) {
 			userAdd = new User();
 			String messageSuccess = "Succesfully registered!";
 			System.out.println(messageSuccess);
 			addMessage(messageSuccess);
-			return login();
+			
+			return "index.html?faces-redirect=true";
 		} else {
 			userAdd = new User();
 			String messageFailure = "Registration failed!";

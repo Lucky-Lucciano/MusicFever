@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import net.etfbl.musicfever.dao.ConnectionPool;
 import net.etfbl.musicfever.dto.User;
@@ -22,7 +21,6 @@ public class UserDAO {
 	private static final String SQL_EMAIL_FROM_ALL_REGISTERED_USERS = "SELECT email FROM user WHERE usergroup=0 AND active=1";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
 	
-	// Ajaxom se moze provjeriti je l dostupno - ako ne bude vremena izbaciti
 	public static boolean usernameAvailable(String name) {
 		Connection connection = null;
 		boolean rezultat = false;

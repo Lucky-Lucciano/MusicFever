@@ -19,7 +19,7 @@
 					<p:commandButton value="Add Genre" onclick="PF('addGenreDlg').show();" icon="ui-icon-plus" style="float:right" type="button"></p:commandButton>  
 				</h:panelGroup>   
 	            <h:form id="form">
-				    <p:dataTable id="genreDT" var="genre" value="#{genreBean.allGenres}" style="text-align: center">
+				    <p:dataTable id="genreDT" var="genre" value="#{genreBean.allGenres}" style="text-align: center" rows="10" paginator="true" paginatorPosition="bottom">
 				        <f:facet name="header">
 				            Genres
 				        </f:facet>

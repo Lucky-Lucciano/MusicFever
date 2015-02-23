@@ -46,7 +46,9 @@
 					<label for="Password">Password</label>
 					<div class="entry">
 						<div class="warning-cont">
-							<p:password value="#{userBean.userAdd.password}" styleClass="searchInput long"></p:password>
+							<p:password value="#{userBean.userAdd.password}" styleClass="searchInput long">
+								<f:validateRegex pattern="((?=.*[a-z])(?=.*[A-Z]).{15,})" />
+							</p:password>
 						</div>
 					</div>
 				</li>

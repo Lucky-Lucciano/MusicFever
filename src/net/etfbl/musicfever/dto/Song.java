@@ -1,31 +1,36 @@
 package net.etfbl.musicfever.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Song {
+public class Song implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String artist;
 	private String name;
 	private boolean active;
-	private int releaseDate;
+	private Date releaseDate;
 	private int duration;
 	private int fileType;
 	private Date registrationDate;
 	private String location;
 	private String lyrics;
-	private ArrayList<Genre> genres = new ArrayList<Genre>(); // nije u constr.
+	private int user_id;
+	private ArrayList<Genre> genres = new ArrayList<Genre>();
 	
 	public Song() {
 		
 	}
 	
 	
-	public Song(int id, String artist, String name, boolean active, int fileType,
-			int releaseDate, int duration, Date registrationDate,
+	public Song(int id, int uid, String artist, String name, boolean active, int fileType,
+			Date releaseDate, int duration, Date registrationDate,
 			String location, String lyrics) {
+		
 		super();
 		this.id = id;
+		this.user_id = uid;
 		this.fileType = fileType;
 		this.artist = artist;
 		this.name = name;
@@ -62,10 +67,10 @@ public class Song {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-	public int getReleaseDate() {
+	public Date getReleaseDate() {
 		return releaseDate;
 	}
-	public void setReleaseDate(int releaseDate) {
+	public void setReleaseDate(Date releaseDate) {
 		this.releaseDate = releaseDate;
 	}
 	public int getDuration() {
@@ -111,5 +116,25 @@ public class Song {
 	public void setGenres(ArrayList<Genre> genres) {
 		this.genres = genres;
 	}
-	
+
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Song [id=" + id + ", artist=" + artist + ", name=" + name
+				+ ", active=" + active + ", releaseDate=" + releaseDate
+				+ ", duration=" + duration + ", fileType=" + fileType
+				+ ", registrationDate=" + registrationDate + ", location="
+				+ location + ", lyrics=" + lyrics + ", user_id=" + user_id
+				+ ", genres=" + genres + "]";
+	}
 }

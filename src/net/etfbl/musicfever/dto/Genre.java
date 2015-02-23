@@ -1,6 +1,9 @@
 package net.etfbl.musicfever.dto;
 
-public class Genre {
+import java.io.Serializable;
+
+public class Genre implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String name;
 	private boolean primary;
@@ -52,5 +55,12 @@ public class Genre {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
+
+	@Override
+	public String toString() {
+		return "Genre [id=" + id + ", name=" + name + ", primary=" + primary
+				+ ", active=" + active + "]";
+	}
+	
 	
 }

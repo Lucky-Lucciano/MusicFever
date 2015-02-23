@@ -14,9 +14,11 @@ import net.etfbl.musicfever.dao.DAOUtil;
 
 public class GenreDAO {
 	private static final String SQL_ADD_GENRE = "INSERT INTO genre(name, active) values(?, ?)";
+	private static final String SQL_ADD_GENRE_ON_SONG = "INSERT INTO song_genre(song_id, genre_id, isPrimary) values(?, ?, ?)";
 	private static final String SQL_UPDATE_GENRE = "UPDATE genre SET name=? WHERE id=?";
 	private static final String SQL_DELETE_GENRE = "UPDATE genre SET active=0 WHERE id=?";
 	private static final String SQL_ALL_GENRES = "SELECT * FROM genre WHERE active=1";
+	private static final String SQL_ALL_GENRES_ON_SONG = "SELECT id, name, active, isPrimary FROM genre INNER JOIN song_genre ON genre.id = song_genre.genre_id WHERE song_genre.song_id = ? AND genre.active = 1";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
 	
 	// Ajaxom se moze provjeriti je l dostupno - ako ne bude vremena izbaciti
@@ -164,26 +166,53 @@ public class GenreDAO {
 	
 	// vraca sve registrovane korsinike koji su na pjesmi
 	// prvo izbrisati sve genre na toj pjesmi pa zamjeniti s novima
-	public static boolean setGenresOnSong(ArrayList<Genre> genres, int primaryGenreId) {
+	public static boolean setGenreOnSong(int songId, int genreId, boolean isPrimary) {
 		Connection connection = null;
-		boolean rez = false;
-		Object values[] = {};
+		boolean retVal = false;
+		Object values[] = {songId, genreId, isPrimary};
 		
 		try {
 			connection = ConnectionPool.getConnectionPool().checkOut();
-			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ALL_GENRES, false, values);
-			ResultSet rs = pstmt.executeQuery();
-//			while(rs.next()) {
-//				rez.add(new Genre(rs.getInt(1), rs.getString(2), rs.getInt(3) == 1));
-//			}			
-			rs.close();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ADD_GENRE_ON_SONG, false, values);
+			int rez = pstmt.executeUpdate();
+			if (rez == 0) {
+				retVal = false;
+				System.out.println("Couldnt add genre on song");
+			} else {
+				retVal = true;
+				System.out.println("Genre " + genreId + " on song added");
+			}
+			
 			pstmt.close();
-			return rez;
+			return retVal;
 		} catch(Exception ex) {
 			ex.printStackTrace(System.err);
 			return false;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);			
 		}
-	}	
+	}
+	
+	public static ArrayList<Genre> getGenresOnSong(int songId) {
+		Connection connection = null;
+		ArrayList<Genre> rez = new ArrayList<Genre>();
+		Object values[] = {songId};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ALL_GENRES_ON_SONG, false, values);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				rez.add(new Genre(rs.getInt(1), rs.getString(2), rs.getInt(4) == 1, rs.getInt(3) == 1));
+			}			
+			rs.close();
+			pstmt.close();
+			return rez;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return null;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);			
+		}
+	}
 }

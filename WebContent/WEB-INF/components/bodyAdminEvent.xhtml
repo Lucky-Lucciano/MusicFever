@@ -61,13 +61,17 @@
 				            </p:commandLink>
 				        </p:column>
 				        <p:column headerText="Start Time">
-				            <h:outputText value="#{event.startTime}" />
+				            <h:outputText value="#{event.startTime}" >
+				            	<f:convertDateTime pattern="yyyy MMM dd HH:mm:ss" type="both" timeStyle="medium"/>
+				            </h:outputText>
 				        </p:column>
 				        <p:column headerText="Location">
 				            <h:outputText value="#{event.location}" />
 				        </p:column>
 				        <p:column headerText="Created">
-				            <h:outputText value="#{event.creationTime}" />
+				            <h:outputText value="#{event.creationTime}" >
+				            	<f:convertDateTime pattern="MM/dd/yyyy HH:mm"  type="both"/>
+				            </h:outputText>
 				        </p:column>
 				        <p:column headerText="Delete">
 				            <p:commandLink ajax="false" update=":form:msgs" action="#{eventBean.removeEvent}" value="Delete" styleClass="center-content-anchor">

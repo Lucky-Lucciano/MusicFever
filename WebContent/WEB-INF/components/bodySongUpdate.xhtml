@@ -1,0 +1,154 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head />
+    <ui:composition>
+    	<h:form id="form" styleClass="content" style="background: ghostwhite;">
+    		<p:growl id="msgs" life="4000"/>
+    		
+	     	<div class="text-block" id="top">  
+				<h1> Update song </h1>
+			</div>
+			
+			<div class="editBasicTab">
+				<div class="baseFields sc-clearfix">
+					<div class="baseFields__title sc-border-box">
+						 <div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Title </span>
+							<div class="textfield__inputWrapper" >
+							  	<p:inputText value="#{songBean.songSelected.name}" placeholder="Name your track" id="textfield__input-title" styleClass="textfield__input sc-input sc-input-medium"></p:inputText>
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Artist </span>
+						    <div class="textfield__inputWrapper" >
+								<p:autoComplete id="acArtist" value="#{songBean.songSelected.artist}" completeMethod="#{songBean.completeText}" styleClass="textfield__input" />
+								<p:commandButton icon="ui-icon-plus" update="msgs" oncomplete="PF('addArtistDlg').show()" style="margin-left: 24px"/>
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Type </span>
+						    <div class="textfield__inputWrapper" >
+						        <p:selectOneMenu rendered="#{userBean.user.superuser}" id="consoleSuperuser" value="#{songBean.songSelected.fileType}" style="width:125px" onchange="checkType()">
+						            <f:selectItem itemLabel="Youtube" itemValue="0" />
+						            <f:selectItem itemLabel="SoundCloud" itemValue="1" />
+						            <f:selectItem itemLabel="MP3" itemValue="2" />
+					        	</p:selectOneMenu>
+					        	
+					        	<p:selectOneMenu rendered="#{!userBean.user.superuser}" id="console" value="#{songBean.songSelected.fileType}" style="width:125px">
+						            <f:selectItem itemLabel="Youtube" itemValue="0" />
+						            <f:selectItem itemLabel="SoundCloud" itemValue="1" />
+					        	</p:selectOneMenu>
+					        	
+					        	<p:inputText value="#{songBean.songSelected.location}" id="songLocation" placeholder="Link" styleClass="textfield__input sc-input sc-input-medium link-correction"></p:inputText>
+								
+								<p:fileUpload value="#{songBean.songSelected.location}" id="songLocationFile" mode="simple" skinSimple="true" style="display:none ; margin-left: 12px;"/>
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Release date </span>
+						    <div class="textfield__inputWrapper" >
+								<p:calendar id="popup" value="#{songBean.songSelected.releaseDate}" navigator="true" pattern="yyyy-MM-dd"/>
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Duration </span>
+						    <div class="textfield__inputWrapper" >
+<!-- 								<p:calendar id="duration" value="#{songBean.durationTime}" pattern="HH:mm:ss" timeOnly="true" title="Set the song duration"/> -->
+								<p:inputText value="#{songBean.songSelected.duration}" placeholder="In seconds" styleClass="textfield__input sc-input sc-input-medium link-correction"></p:inputText>
+							</div>
+						  </label>
+						</div>
+						  
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Primary genre </span>
+						    <div class="textfield__inputWrapper" >
+								<p:autoComplete id="primGenre" dropdown="true" value="#{songBean.primaryGenre}" completeMethod="#{songBean.completeTextGenre}" />
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label g-required-label"> Secondary genres </span>
+						    <div class="textfield__inputWrapper" >
+								<p:autoComplete id="secGenres" multiple="true" value="#{songBean.secondaryGenres}" completeMethod="#{songBean.completeSecGenres}"
+					                        var="genre" itemLabel="#{genre}" itemValue="#{genre}"  forceSelection="true">
+						            <p:column>
+						                <h:outputText value="#{genre}" />
+						            </p:column>
+						        </p:autoComplete>
+							</div>
+						  </label>
+						</div>
+						
+						<div class="textfield messageOutside">
+						  <label>
+						    <span class="textfield__label"> Lyrics </span>
+						    <div class="textfield__inputWrapper" >
+								<p:inputTextarea rows="5" cols="30" value="#{songBean.songSelected.lyrics}" counter="display" maxlength="2147483" style="width: 403px; height: 150px;"
+													counterTemplate="{0} characters remaining." autoResize="false" />
+    							<h:outputText id="display" style="display: block"/>
+							</div>
+						  </label>
+						</div>
+					</div>
+			
+					<div class="baseFields__image">
+					  	<div tabindex="0" style="height: 300px; width: 300px;" class="image interactive">
+							<span style="width:300px;height:300px;" class="sc-artwork sc-artwork-placeholder-0 image__full" aria-label="" aria-role="img"></span>
+						    <span class="image__button sc-button sc-button-small"> Preview</span>
+					
+						</div>
+					</div>
+					
+					
+				    <p:commandButton action="#{songBean.updateSong}" update="msgs" value="Update!" title="Send song details" style="margin: 10px 0 25px 2px;">
+						<f:setPropertyActionListener value="#{userBean.user.id}" target="#{songBean.songSelected.user_id}" />
+		            </p:commandButton>
+				</div>
+			</div>
+			
+			<p:dialog header="Add artist" widgetVar="addArtistDlg" modal="true" resizable="false">
+		        <h:panelGrid columns="2" cellpadding="5">
+		            <h:outputLabel for="name" value="Name:" />
+		            <p:inputText id="name" value="#{songBean.artist}" label="name"/>
+		 
+		            <f:facet name="footer">
+		                <p:commandButton value="Add" action="#{songBean.addNewArtist}" update=":#{p:component('msgs')} " oncomplete="PF('addArtistDlg').hide()"/>
+		            </f:facet>  
+		        </h:panelGrid>
+		    </p:dialog>
+     	</h:form>
+     	
+     	<script>
+     		function checkType() {
+     			console.log("checking...");
+     			
+     			if(document.getElementById('form:consoleSuperuser_input').value == 2) {
+     				document.getElementById('form:songLocationFile').style.display='inline-block';
+     				document.getElementById('form:songLocation').style.display='none';
+     			} else {
+     				document.getElementById('form:songLocationFile').style.display='none';
+     				document.getElementById('form:songLocation').style.display='inline-block';
+     			}
+     		}
+     	</script>
+    </ui:composition>
+</html>

@@ -98,13 +98,48 @@
 							</div>
 						  </label>
 						</div>
+						
+						<div>
+							<h:outputLabel for="location" value="Comment: " />
+				            <p:inputText id="location" value="#{songBean.addComment}" label="location" />
+			            
+			                <p:commandButton value="Add" action="#{songBean.addNewComment}" update="form:comments" > 
+			                </p:commandButton> 
+						</div>
+						
+						
+						
+						<p:dataGrid var="comment" value="#{songBean.songComments}" columns="1" layout="grid" id="comments" >
+					        <f:facet name="header">
+					            Song comment
+					        </f:facet>
+					 
+					        <p:panel style="text-align:center">
+					            <h:panelGrid columns="1" style="width:50%">
+
+					 				<h:outputText value="#{comment.userId}" />
+					 				
+					                <h:outputText value="#{comment.comment}" />
+					 				
+					 				<h:outputText value="Added: #{comment.time}" >
+<!-- 					 					<f:convertDateTime pattern="dd MMM yyyy" /> -->
+					 				</h:outputText>
+					 				
+					                <p:commandLink rendered="#{userBean.user.usergroup == 1}" title="Delete" action="#{songBean.removeComment}" update="comments">
+					                    <h:outputText styleClass="ui-icon ui-icon-close" style="margin:0 auto;" />
+					                    <f:setPropertyActionListener value="#{comment.userId}" target="#{songBean.deletCommentUser}" />
+					                </p:commandLink>
+					            </h:panelGrid>
+					        </p:panel>
+					 
+					    </p:dataGrid>
 					</div>
 			
 					<div class="baseFields__image">
 					  	<div tabindex="0" style="height: 300px; width: 300px;" class="image interactive">
 <!-- 							<span style="width:300px;height:300px;" class="sc-artwork sc-artwork-placeholder-0 image__full" aria-label="" aria-role="img"> -->
 								<h:panelGroup rendered="#{songBean.songSelected.fileType == 0}" style="width:300px;height:300px;" class="sc-artwork sc-artwork-placeholder-0">
-									<iframe width="560" height="315" src="#{songBean.songSelected.location}" frameborder="0" allowfullscreen>
+									<iframe width="310" height="315" src="#{songBean.songSelected.location}" frameborder="0" >
 									</iframe>
 								</h:panelGroup>
 								
@@ -118,7 +153,22 @@
 								</h:panelGroup>
 <!-- 							</span> -->
 <!-- 						    <span class="image__button sc-button sc-button-small"> Preview </span> -->
+
+								<p:commandButton rendered="#{songBean.favourited or userBean.user.usergroup == 1}" disabled="true" value="Favourite" icon="ui-icon-heart" action="#{songBean.addToFavourites}" />
+								<p:commandButton rendered="#{!songBean.favourited}" value="Favourite" icon="ui-icon-heart" action="#{songBean.addToFavourites}" ajax="false"/>
 						</div>
+						
+						
+						<p:growl id="messages" showDetail="true" />
+						
+						<h:panelGroup style="margin: 60px 99px;" layout="block">
+							 Rating:
+							<p:rating value="#{songBean.rating}">
+					            <p:ajax event="rate" listener="#{songBean.onrate}" update="messages" />
+					            <p:ajax event="cancel" listener="#{songBean.oncancel}" update="messages" />
+					        </p:rating>
+						</h:panelGroup>
+						
 					</div>
 				</div>
 			</div>

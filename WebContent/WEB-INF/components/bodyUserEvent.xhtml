@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+	        <div class="content">
+				<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+	     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+						<li><h:link value="My songs" outcome="user"/></li>
+						<li >
+							<h:form>
+							<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+									<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+								</h:commandLink>
+							</h:form>
+						</li>
+						<li><h:link value="Uploader" outcome="upload"/></li>
+						<li class="active"><h:link value="Events" outcome="user-event"/></li>
+					</ul>
+	     		</h:panelGroup>
+				<h:form id="form" style="float:right; display: inline-block;">
+					<p:growl id="msgs" life="4000" showDetail="true"/>
+					<h:panelGroup rendered="#{userBean.user.superuser}">
+						<p:commandButton value="Add Event" onclick="PF('addEventDlg').show();" icon="ui-icon-plus"  type="button"></p:commandButton>  
+					</h:panelGroup>    
+					
+					<p:dialog header="Add event" widgetVar="addEventDlg" modal="true" resizable="false">
+				        <h:panelGrid columns="2" cellpadding="5">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{eventBean.eventAdd.name}" label="name" />
+				            
+				            <h:outputLabel for="location" value="Location:" />
+				            <p:inputText id="location" value="#{eventBean.eventAdd.location}" label="location" />
+				            
+				            <p:outputLabel for="datetime" value="Start Time" />
+        					<p:calendar id="datetime" value="#{eventBean.eventAdd.startTime}" pattern="MM/dd/yyyy HH:mm:ss" />
+				 
+				            <f:facet name="footer">
+				                <p:commandButton value="Add" action="#{eventBean.addNewEvent}" update="msgs :eventForm:eventsDT" oncomplete="PF('addEventDlg').hide()">
+				                	<f:setPropertyActionListener value="#{userBean.user.id}" target="#{eventBean.userCreatorId}" />
+				                </p:commandButton>
+				            </f:facet>  
+				        </h:panelGrid>
+				     </p:dialog>
+				    
+				     <p:confirmDialog global="true" showEffect="fade">
+				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+			    </h:form>              
+	            
+	            	
+	            <h:form id="eventForm">
+	            	<p:dataTable id="eventsDT" var="event" value="#{eventBean.allEvents}" style="text-align: center">
+				        <f:facet name="header">
+				            Events
+				        </f:facet>
+				        <p:column headerText="Name">
+				            <h:outputText value="#{event.name}" />
+				        </p:column>
+				        <p:column headerText="Activate">
+				        	<h:graphicImage rendered="#{event.approved}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
+				            <h:outputText rendered="#{!event.approved}" update=":form:msgs :eventForm:eventsDT" value="Not approved yet" styleClass="center-content-anchor"></h:outputText>
+				        </p:column>
+				        <p:column headerText="Start Time">
+				            <h:outputText value="#{event.startTime}" >
+				            	<f:convertDateTime pattern="yyyy MMM dd HH:mm:ss" type="both" timeStyle="medium"/>
+				            </h:outputText>
+				        </p:column>
+				        <p:column headerText="Location">
+				            <h:outputText value="#{event.location}" />
+				        </p:column>
+				        <p:column headerText="Created">
+				            <h:outputText value="#{event.creationTime}" >
+				            	<f:convertDateTime pattern="MM/dd/yyyy HH:mm"  type="both"/>
+				            </h:outputText>
+				        </p:column>
+				    </p:dataTable>
+	            </h:form>
+	        </div>
+	        	
+        </ui:composition>
+    </h:body>
+</html>

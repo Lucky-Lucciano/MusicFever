@@ -5,14 +5,23 @@
       xmlns:f="http://java.sun.com/jsf/core">
       
     <h:head/>
-    <h:body>
-        <ui:composition>
+    <h:body >
+        <ui:composition >
 	        <div class="content">
-				<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
-					<li class="active"><h:link value="My songs" outcome="user"/></li>
-					<li><h:link value="Genres" outcome="admin-genre"/></li>
-					<li><h:link value="Events" outcome="admin-event"/></li>
-				</ul>
+				<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+	     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+						<li class="active"><h:link value="My songs" outcome="user"/></li>
+						<li >
+							<h:form>
+							<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+									<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+								</h:commandLink>
+							</h:form>
+						</li>
+						<li><h:link value="Uploader" outcome="upload"/></li>
+						<li><h:link value="Events" outcome="user-event"/></li>
+					</ul>
+	     		</h:panelGroup>
 				<h:form id="form" style="float:right; display: inline-block;">
 					<p:growl id="msgs" life="4000" showDetail="true"/>
 					
@@ -52,9 +61,10 @@
 				            </p:commandLink>
 				        </p:column>
 					    <p:column style="width:60px" headerText="Details">
-				             <p:commandButton action="song-details.html?faces-redirect=true" icon="ui-icon ui-icon-pencil" title="Edit">
+				             <p:commandButton action="song-update.html?faces-redirect=true" icon="ui-icon ui-icon-pencil" title="Edit">
 				                <f:setPropertyActionListener value="#{song}" target="#{songBean.songSelected}" />
 				            </p:commandButton>
+				            
 				        </p:column>
 				    </p:dataTable>
 	            </h:form>

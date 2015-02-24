@@ -8,8 +8,16 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-	<url-pattern>*.html</url-pattern>
+    <url-pattern>*.html</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>Uploader</servlet-name>
+    <servlet-class>net.etfbl.musicfever.servlet.Uploader</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>Uploader</servlet-name>
+    <url-pattern>/uploader</url-pattern>
+</servlet-mapping>
   <context-param>
     <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
     <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -20,18 +28,18 @@
     <param-value>resources.application</param-value>
   </context-param>
   <context-param>
-	<param-name>primefaces.THEME</param-name>
-	<param-value>overcast</param-value>
+    <param-name>primefaces.THEME</param-name>
+    <param-value>overcast</param-value>
   </context-param>
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>
-  <filter>   <!-- filter koji iskljucuje kesiranje koje radi browser -->
-	<filter-name>NoCacheFilter</filter-name>
-	<filter-class>net.etfbl.musicfever.utils.NoCacheFilter</filter-class>
+  <filter>
+    <filter-name>NoCacheFilter</filter-name>
+    <filter-class>net.etfbl.musicfever.utils.NoCacheFilter</filter-class>
   </filter>
   <filter-mapping>
-	<filter-name>NoCacheFilter</filter-name>
-	<servlet-name>Faces Servlet</servlet-name>
+    <filter-name>NoCacheFilter</filter-name>
+    <servlet-name>Faces Servlet</servlet-name>
   </filter-mapping>
 </web-app>

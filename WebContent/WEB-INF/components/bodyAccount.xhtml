@@ -9,14 +9,22 @@
     	
     	<h:form styleClass="content">
 	     	<div class="text-block" id="top">
-	     		<h:link value="&lt;- back to Admin" outcome="admin" styleClass="signup-button" style="position:relative; background-color:black" />
+	     		<h:link rendered="#{userBean.user.usergroup == 1}" value="&lt;- back to Admin" outcome="admin" styleClass="signup-button" style="position:relative; background-color:black" />
 				<h1>Account Settings</h1>
-				<ul class="navlist clearfix">
-					<li class="active"><a href="#">General</a></li>
-					<li><a href="https://tunein.com/social/">Favourites</a></li>
-					<li><a href="https://tunein.com/devices/">Comments</a></li>
-					<li><a href="https://tunein.com/mediatypes/">Play Lists</a></li>
-				 </ul>
+	     		<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+	     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+						<li><h:link value="My songs" outcome="user"/></li>
+						<li class="active">
+							<h:form>
+							<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+									<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+								</h:commandLink>
+							</h:form>
+						</li>
+						<li><h:link value="Uploader" outcome="upload"/></li>
+						<li><h:link value="Events" outcome="user-event"/></li>
+					</ul>
+	     		</h:panelGroup>
 			</div>
 			<ul class="list-form">
 				<li class="clearfix">

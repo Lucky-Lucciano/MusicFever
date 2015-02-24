@@ -20,6 +20,7 @@ public class UserDAO {
 	private static final String SQL_ALL_USERS = "SELECT * FROM user WHERE usergroup=0 AND active=1";
 	private static final String SQL_EMAIL_FROM_ALL_REGISTERED_USERS = "SELECT email FROM user WHERE usergroup=0 AND active=1";
 	private static final String SQL_USERNAME_AVAILABLE = "SELECT count(*) FROM user WHERE username=?";
+	private static final String SQL_GET_PROFILE_IMAGE = "SELECT image FROM user WHERE id=?";
 	
 	public static boolean usernameAvailable(String name) {
 		Connection connection = null;
@@ -40,6 +41,30 @@ public class UserDAO {
 		} catch(Exception ex) {
 			ex.printStackTrace(System.err);
 			return false;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+	}
+	
+	public static String getProfileImage(int uid) {
+		Connection connection = null;
+		String rezultat = "";
+		Object values[] = {uid};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_GET_PROFILE_IMAGE, false, values);
+			ResultSet rs = pstmt.executeQuery();
+			if(rs.next())
+				rezultat = rs.getString(1);
+			else
+				rezultat = "";
+			rs.close();
+			pstmt.close();
+			return rezultat;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return "";
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);
 		}

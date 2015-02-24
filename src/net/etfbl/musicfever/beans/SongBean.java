@@ -11,8 +11,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
+import org.primefaces.event.RateEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -21,6 +26,7 @@ import net.etfbl.artistdb.ArtistsServiceLocator;
 import net.etfbl.musicfever.dao.GenreDAO;
 import net.etfbl.musicfever.dao.SongDAO;
 import net.etfbl.musicfever.dao.UserDAO;
+import net.etfbl.musicfever.dto.Comment;
 import net.etfbl.musicfever.dto.Genre;
 import net.etfbl.musicfever.dto.Song;
 import net.etfbl.musicfever.dto.User;
@@ -34,7 +40,8 @@ public class SongBean implements Serializable {
 	private Song songDelete = new Song();
 	private Song songAdd = new Song();
 	private Song songSelected = new Song();
-
+	private Part uploadFile;
+	
 	private ArrayList<Genre> allGenres = GenreDAO.getAllGenres();
 	private ArrayList<String> secondaryGenres = new ArrayList<String>();;
 	private ArrayList<Genre> detailsSecGenres = new ArrayList<Genre>();
@@ -42,19 +49,130 @@ public class SongBean implements Serializable {
 	private ArrayList<Song> searchResults = new ArrayList<Song>();
 	private ArrayList<Song> userSongs = new ArrayList<Song>();
 	private StreamedContent file;
+	private boolean favourited;
 	private String searchQuery = "";
 	private String primaryGenre = "";
 	private String detailsPrimaryGenre = "";
 	private Date durationTime;
 	private int userId = -1;
 	private String artist = "";
+	private Integer rating;
+	private ArrayList<Song> songComments = new ArrayList<Song>();
+	private String profilePic = "";
+	private int deletCommentUser;
+	private String addComment;
+	
+	
+	
+//	public String getProfilePic() {
+//		return  UserDAO.getCommentsOnSong(songSelected);
+//	}
+	
+	public String addNewComment() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		if(SongDAO.addComment(uid, songSelected, addComment)) {
+			return "";
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public String removeComment() {		
+		if(SongDAO.deleteComment(deletCommentUser, songSelected)) {
+			return "";
+		} else {
+			return null;
+		}
+		
+	}
+	
+	public String getAddComment() {
+		return addComment;
+	}
+
+	public void setAddComment(String addComment) {
+		this.addComment = addComment;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	public int getDeletCommentUser() {
+		return deletCommentUser;
+	}
+
+	public void setDeletCommentUser(int deletCommentUser) {
+		this.deletCommentUser = deletCommentUser;
+	}
+
+	public ArrayList<Comment> getSongComments() {
+		return SongDAO.getCommentsOnSong(songSelected);
+	}
+	
+	/*public String deleteComment() {
+		return SongDAO.getCommentsOnSong(songSelected);
+	}*/
+
+
+	public void setSongComments(ArrayList<Song> songComments) {
+		this.songComments = songComments;
+	}
+
+
+	public Integer getRating() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		System.out.println("Checking rat: " + SongDAO.getRating(uid, songSelected));
+		return SongDAO.getRating(uid, songSelected);
+	}
+
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+
+	public void setFavourited(boolean favourited) {
+		this.favourited = favourited;
+	}
+	
+	public void onrate(RateEvent rateEvent) {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+		System.out.println("Checking rat: " + uid + " rating: " + ((Integer) rateEvent.getRating()).intValue());
+		
+		SongDAO.addRating(uid, songSelected, ((Integer) rateEvent.getRating()).intValue());
+		
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Rate Event", "You rated:" + ((Integer) rateEvent.getRating()).intValue());
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+     
+    public void oncancel() {
+    	UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+    	SongDAO.addRating(uid, songSelected, 0);
+    	
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancel Event", "Rate Reset");
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+
+	public boolean getFavourited() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		boolean temp = SongDAO.isFav(uid, songSelected);
+		
+		return temp;
+	}
+	
 	
 	public String addSong() {
-		System.out.println(songAdd);
-		System.out.println("Other values: primaryGenreA - " + primaryGenre);
 		songAdd.setGenres(convertGenres(primaryGenre, secondaryGenres));
-		System.out.println(songAdd);
-		System.out.println("Other values: primaryGenre - " + primaryGenre);
 		
 		if((song = SongDAO.addSong(songAdd)) != null) {
 			songAdd = new Song();
@@ -73,10 +191,27 @@ public class SongBean implements Serializable {
 		}
 	}
 	
+	public String updateSong() {
+		songSelected.setGenres(convertGenres(primaryGenre, secondaryGenres));
+		
+		if(SongDAO.updateSong(songSelected)) {
+			songSelected = new Song();
+			String messageSuccess = "Succesfully updated!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			
+			return "user.html?faces-redirect=true";
+		} else {
+			songSelected = new Song();
+			String messageFailure = "Song couldn't be updated!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
 	public StreamedContent getFile() {
 		try {
-		System.out.println("Unutar fff: " +  songSelected.getId());
-		System.out.println("Unutar det: " +  songSelected.getArtist() + " - " + songSelected.getName() + ".mp3");
 		InputStream stream = ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/resources/music/" + songSelected.getId() + ".mp3");
         file = new DefaultStreamedContent(stream, "audio/mpeg", songSelected.getArtist() + " - " + songSelected.getName() + ".mp3");
 		
@@ -96,9 +231,6 @@ public class SongBean implements Serializable {
 		return SongDAO.getLatestAddedSongs();
 	}
 	
-	public void addSongToFavourite() {
-		
-	}
 	
 	public ArrayList<Song> getSearchResults() {
 		ArrayList<Song> res = SongDAO.getMatchingSongs(searchQuery);
@@ -128,21 +260,6 @@ public class SongBean implements Serializable {
 			
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			return null;
-		}
-	}
-	
-	public String updateSong() {
-		if(SongDAO.updateSong(songSelected)){
-			String messageSuccess = "Song info updated!";
-			System.out.println(messageSuccess);
-			addMessage(messageSuccess);
-			return "";
-		} else {
-			songDelete = new Song();
-			String messageFailure = "Failed to update song info!";
-			System.out.println(messageFailure);
-			addMessage(messageFailure);
 			return null;
 		}
 	}
@@ -334,11 +451,32 @@ public class SongBean implements Serializable {
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
 	}
-
-
+	
+	public String addToFavourites() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+		if(SongDAO.addSongToFavourites(uid, songSelected)) {
+			String messageSuccess = "Song added to favourites!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			return "";
+		} else {
+			String messageFailure = "Failed add to favourites!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
 	public String getDetailsPrimaryGenre() {
 		String rez = "";
-        
+
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		// History tracker
+		SongDAO.updateHistory(uid, songSelected);
+
         for (int i = 0; i < songSelected.getGenres().size(); i++) {
             Genre gen = songSelected.getGenres().get(i);
             
@@ -374,15 +512,39 @@ public class SongBean implements Serializable {
 	}
 
 	public ArrayList<Song> getUserSongs() {
-		System.out.println("Adding song to history...: ");
 		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
 		int uid = curentUser.getUser().getId();
-		
-		SongDAO.updateHistory(uid, songSelected);
+
 		return SongDAO.getAllSongs(uid);
 	}
 
 	public void setUserSongs(ArrayList<Song> userSongs) {
 		this.userSongs = userSongs;
+	}
+	
+	
+	public Part getUploadFile() {
+		return uploadFile;
+	}
+
+	public void setUploadFile(Part uploadFile) {
+		this.uploadFile = uploadFile;
+	}
+
+	public void callUploadServlet() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+			request.setAttribute("uploadFile", getUploadFile());
+			//request.setAttribute("songId", String.valueOf(songSelected.getId()));
+			request.setAttribute("songId", "1");
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/Uploader");
+			dispatcher.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			context.responseComplete();
+		}
 	}
 }

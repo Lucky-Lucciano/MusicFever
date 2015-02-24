@@ -23,7 +23,11 @@ public class UserBean implements Serializable {
 	private int approveUserId = -1;
 	private int upgradeUserId = -1;
 
-	
+	public String goToAccount() {
+		return "account.html?faces-redirect=true";
+	}
+
+
 	public String updateUser() {
 		if(UserDAO.updateUser(userSelected)){
 			String messageSuccess = "User info updated!";

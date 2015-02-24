@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+	        <div class="content">
+				<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+	     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+						<li><h:link value="My songs" outcome="user"/></li>
+						<li >
+							<h:form>
+							<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+									<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+								</h:commandLink>
+							</h:form>
+						</li>
+						<li class="active"><h:link value="Uploader" outcome="upload"/></li>
+						<li ><h:link value="Events" outcome="user-event"/></li>
+					</ul>
+	     		</h:panelGroup>
+			 <h:form enctype="multipart/form-data">
+	            <h:inputFile  value="#{songBean.uploadFile}" />
+	            <h:commandButton value="submit" action="#{songBean.callUploadServlet}" />
+	            <h:messages />
+	        </h:form>
+	        </div>
+	        	
+        </ui:composition>
+    </h:body>
+</html>

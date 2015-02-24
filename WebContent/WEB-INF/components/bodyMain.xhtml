@@ -20,8 +20,33 @@
 			
 			
 			<h:form styleClass="content" stlye="width: 870px">
-		     	<div class="text-block" id="top">  
-					<h1 style="font-size: 22px; text-align:left">Registration</h1>
+		     	<div class="text-block" id="top">
+		     		<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+		     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+							<li><h:link value="My songs" outcome="user"/></li>
+							<li >
+								
+								<h:commandLink value="Profile" action="#{userBean.goToAccount}">  
+										<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+									</h:commandLink>
+								
+							</li>
+							<li><h:link value="Uploader" outcome="upload"/></li>
+							<li><h:link value="Events" outcome="user-event"/></li>
+						</ul>
+		     		</h:panelGroup>
+		     		<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 1}">
+			     		<ul class="navlist clearfix" style="margin-bottom: 10px">
+							<li ><h:link value="Users" outcome="admin"/></li>
+							<li ><h:link value="Genres" outcome="admin-genre"/></li>
+							<li ><h:link value="Events" outcome="admin-event"/></li>
+							<li >
+								<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+										<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+									</h:commandLink>
+							</li>
+						</ul>
+					</h:panelGroup>
 				</div>
 				<p:dataGrid var="song" value="#{songBean.latestAddedSongs}" columns="3" layout="grid" id="songs" >
 			 

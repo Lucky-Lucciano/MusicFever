@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head/>
+    <h:body>
+        <ui:composition template="/WEB-INF/templates/layout.xhtml">            
+            <ui:define name="header">
+                <ui:include src="/WEB-INF/components/header.xhtml"></ui:include>
+            </ui:define>            
+           	<ui:define name="body">
+           		<ui:include src="/WEB-INF/components/bodyUserEvent.xhtml"></ui:include>
+           		<h:outputStylesheet library="css" name="admin.css"></h:outputStylesheet>
+           		<h:outputStylesheet library="css" name="account.css"></h:outputStylesheet>
+           	</ui:define>
+        </ui:composition>
+    </h:body>
+</html>

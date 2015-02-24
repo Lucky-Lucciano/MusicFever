@@ -10,10 +10,17 @@
 	        <p:growl id="msgsGen" life="4000"/>
 	        
 	        <div class="content">
-				<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
-					<li><h:link value="Users" outcome="admin"/></li>
+				<ul class="navlist clearfix" style="margin-bottom: 10px">
+					<li ><h:link value="Users" outcome="admin"/></li>
 					<li class="active"><h:link value="Genres" outcome="admin-genre"/></li>
-					<li><h:link value="Events" outcome="admin-event"/></li>
+					<li ><h:link value="Events" outcome="admin-event"/></li>
+					<li >
+						<h:form>
+						<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+								<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+							</h:commandLink>
+						</h:form>
+					</li>
 				</ul>
 				<h:panelGroup>
 					<p:commandButton value="Add Genre" onclick="PF('addGenreDlg').show();" icon="ui-icon-plus" style="float:right" type="button"></p:commandButton>  

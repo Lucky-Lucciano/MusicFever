@@ -33,6 +33,8 @@
 							</li>
 							<li><h:link value="Uploader" outcome="upload"/></li>
 							<li><h:link value="Events" outcome="user-event"/></li>
+							<li ><h:link value="Playlists" outcome="playlist"/></li>
+							<li><a href="top5.rss"> RSS </a></li>
 						</ul>
 		     		</h:panelGroup>
 		     		<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 1}">
@@ -73,6 +75,26 @@
 			 
 			    </p:dataGrid>
 			</h:form>
+			
+			<div style="width: 300px">
+            <p:dataGrid var="rss" value="#{songBean.feedCont}" columns="1" layout="grid" id="rss" >
+             
+                    <f:facet name="header">
+                        RSS Feed
+                    </f:facet>
+             
+                    <p:panel style="text-align:center">
+                        <h:panelGrid columns="1" style="width:100%"> 
+                           <h:outputText value="#{rss.title}" style="color: #599FCF"/>
+                           
+                              <h:outputText value="#{rss.description}" style="height: 50px; overflow: hidden"/>
+                           
+                           		<a href="#{rss.link}" style="color: green">Details </a>
+                        </h:panelGrid>
+                    </p:panel>
+             
+                </p:dataGrid>
+         </div>
 			
 <!-- 			<p:feedReader value="http://www.rollingstone.com/music.rss" var="feed" size="10"> -->
 <!-- 			    <h:outputText value="#{feed.title}" style="font-weight: bold;display:block"/> -->

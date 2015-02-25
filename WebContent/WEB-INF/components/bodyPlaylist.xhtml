@@ -1,0 +1,118 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+	        <div class="content">
+				<h:panelGroup rendered="#{userBean.loggedIn and userBean.user.usergroup == 0}">
+	     			<ul class="navlist clearfix" style="margin-bottom: 10px; display: inline-block;">
+						<li><h:link value="My songs" outcome="user"/></li>
+						<li >
+							<h:form>
+							<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+									<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+								</h:commandLink>
+							</h:form>
+						</li>
+						<li><h:link value="Uploader" outcome="upload"/></li>
+						<li ><h:link value="Events" outcome="user-event"/></li>
+						<li class="active"><h:link value="Playlists" outcome="playlist"/></li>
+					</ul>
+	     		</h:panelGroup>
+				<h:form id="form" style="float:right; display: inline-block;">
+					<p:growl id="msgs" life="4000" showDetail="true"/>
+					
+					<p:commandButton value="Add Playlist" onclick="PF('addEventDlg').show();" icon="ui-icon-plus"  type="button"></p:commandButton>    
+					
+					<p:dialog header="Add Playlist" widgetVar="addEventDlg" modal="true" resizable="false">
+				        <h:panelGrid columns="2" cellpadding="5">
+				            <h:outputLabel for="name" value="Name:" />
+				            <p:inputText id="name" value="#{songBean.plAdd.title}" label="name" />
+				            
+				            <h:outputLabel for="location" value="Description: " />
+				            <p:inputText id="location" value="#{songBean.plAdd.description}" label="location" />
+				            
+				            <f:facet name="footer">
+				                <p:commandButton value="Add" action="#{songBean.addNewPlaylist}" update="msgs :plForm:plDT" oncomplete="PF('addEventDlg').hide()">
+				                </p:commandButton>
+				            </f:facet>  
+				        </h:panelGrid>
+				     </p:dialog>
+				    
+				     <p:confirmDialog global="true" showEffect="fade">
+				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+			    </h:form>              
+	            
+	            	
+	            <h:form id="plForm">
+	            	<p:dataTable id="plDT" var="playlist" value="#{songBean.userPlaylists}" style="text-align: center">
+				        <f:facet name="header">
+				            Playlists
+				        </f:facet>
+				        <p:column headerText="Name">
+				            <h:outputText value="#{playlist.title}" />
+				        </p:column>
+				         <p:column headerText="Description">
+				            <h:outputText value="#{playlist.description}" />
+				        </p:column>
+				        <p:column headerText="Delete">
+					            <p:commandLink update=":plForm" action="#{songBean.removePlaylist}"  value="Delete" styleClass="center-content-anchor">
+					            	<f:setPropertyActionListener value="#{playlist}" target="#{songBean.plDelete}" />
+					            	<p:confirm header="Confirmation" message="Delete playlist?" icon="ui-icon-alert" />
+					            </p:commandLink>
+					        </p:column>
+				        	<p:column headerText="Show list">
+					            <p:commandButton update=":formSong:userSongsDT" action="#{songBean.showPlaylistSongs}"  icon="ui-icon-circle-arrow-s"  styleClass="center-content-anchor">
+					            	<f:setPropertyActionListener value="#{playlist}" target="#{songBean.plSelected}" />
+					            </p:commandButton>
+					        </p:column>
+				    </p:dataTable>
+	            </h:form>
+	            
+	            <h:form id="formSong" style="margin-top: 30px">
+	            	<p:dataTable id="userSongsDT" var="song" value="#{songBean.playlistSongs}" style="text-align: center">
+				        <f:facet name="header">
+				           Playlist songs
+				        </f:facet>
+				        <p:column headerText="Name">
+				            <h:outputText value="#{song.name}" />
+				        </p:column>
+				        <p:column headerText="Artist">
+				            <h:outputText value="#{song.artist}" > </h:outputText>
+				        </p:column>
+				        <p:column headerText="Release Date">
+				            <h:outputText value="#{song.releaseDate}" >
+				            	<f:convertDateTime pattern="MM/dd/yyyy" />
+				            </h:outputText>
+				        </p:column>
+				        <p:column headerText="Duration">
+				            <h:outputText value="#{song.duration}" />
+				        </p:column>
+				        <p:column headerText="File type">
+				            <p:graphicImage width="50" height="50" library="img" name="#{song.fileType}.png"/> 
+				        </p:column>
+				        <p:column headerText="Delete">
+				            <p:commandLink ajax="false" update=":form:msgs" action="#{songBean.deleteSong}" value="Delete" styleClass="center-content-anchor">
+				            	<f:setPropertyActionListener value="#{song}" target="#{songBean.songDelete}" />
+				            	<p:confirm header="Confirmation" message="Delete song?" icon="ui-icon-alert" />
+				            </p:commandLink>
+				        </p:column>
+					    <p:column style="width:60px" headerText="Listen">
+				             <p:commandButton action="song-details.html?faces-redirect=true" icon="ui-icon ui-icon-play" title="Edit">
+				                <f:setPropertyActionListener value="#{song}" target="#{songBean.songSelected}" />
+				            </p:commandButton>
+				            
+				        </p:column>
+				    </p:dataTable>
+	            </h:form>
+	        </div>
+	        	
+        </ui:composition>
+    </h:body>
+</html>

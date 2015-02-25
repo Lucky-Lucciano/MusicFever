@@ -29,6 +29,8 @@ public class UserBean implements Serializable {
 
 
 	public String updateUser() {
+		System.out.println("JMBG " + userSelected.getJMBG());
+		
 		if(UserDAO.updateUser(userSelected)){
 			String messageSuccess = "User info updated!";
 			System.out.println(messageSuccess);

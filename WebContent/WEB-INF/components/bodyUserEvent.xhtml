@@ -20,6 +20,8 @@
 						</li>
 						<li><h:link value="Uploader" outcome="upload"/></li>
 						<li class="active"><h:link value="Events" outcome="user-event"/></li>
+						<li ><h:link value="Playlists" outcome="playlist"/></li>
+						<li><a href="top5.rss"> RSS </a></li>
 					</ul>
 	     		</h:panelGroup>
 				<h:form id="form" style="float:right; display: inline-block;">
@@ -64,7 +66,10 @@
 				        </p:column>
 				        <p:column headerText="Activate">
 				        	<h:graphicImage rendered="#{event.approved}" name="img/check_blue.png" width="30" height="30" styleClass="center-content"/>
-				            <h:outputText rendered="#{!event.approved}" update=":form:msgs :eventForm:eventsDT" value="Not approved yet" styleClass="center-content-anchor"></h:outputText>
+				            <p:commandLink rendered="#{!event.approved}" update=":form:msgs :eventForm:eventsDT" action="#{eventBean.approveEvent}" value="Approve" styleClass="center-content-anchor">
+				            	<f:setPropertyActionListener value="#{event}" target="#{eventBean.eventToBeApproved}" />
+				            	<p:confirm header="Confirmation" message="Approve event?" icon="ui-icon-alert" />
+				            </p:commandLink>
 				        </p:column>
 				        <p:column headerText="Start Time">
 				            <h:outputText value="#{event.startTime}" >
@@ -78,6 +83,12 @@
 				            <h:outputText value="#{event.creationTime}" >
 				            	<f:convertDateTime pattern="MM/dd/yyyy HH:mm"  type="both"/>
 				            </h:outputText>
+				        </p:column>
+				        <p:column headerText="Delete">
+				            <p:commandLink ajax="false" update=":form:msgs" action="#{eventBean.removeEvent}" value="Delete" styleClass="center-content-anchor">
+				            	<f:setPropertyActionListener value="#{event}" target="#{eventBean.eventDelete}" />
+				            	<p:confirm header="Confirmation" message="Delete event?" icon="ui-icon-alert" />
+				            </p:commandLink>
 				        </p:column>
 				    </p:dataTable>
 	            </h:form>

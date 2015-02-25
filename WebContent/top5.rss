@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+<channel>
+	<title>Best rated songs</title>
+	<link></link>
+	<description>Latest best rated songs</description>
+	<language>en</language>
+	<copyright>Copyright hold by Luka Trifunovic</copyright>
+	<pubdate>Tue, 24 Feb 2015 23:09:00 +0100</pubdate>
+<item>
+	<title>Where did you sleep last night?</title>
+	<description>Nirvana</description>
+	<link>http://localhost:8080/MusicFever/faces/index.xhtml</link>
+	<author>Luka Trifunovic</author>
+	<guid></guid>
+
+</item>
+<item>
+	<title>Smells like teen spirit </title>
+	<description>Nirvana</description>
+	<link>http://localhost:8080/MusicFever/faces/index.xhtml</link>
+	<author>Luka Trifunovic</author>
+	<guid></guid>
+
+</item>
+<item>
+	<title>My Immortal</title>
+	<description>Evanescence</description>
+	<link>http://localhost:8080/MusicFever/faces/index.xhtml</link>
+	<author>Luka Trifunovic</author>
+	<guid></guid>
+
+</item>
+<item>
+	<title>trrrr</title>
+	<description>The White Stripes</description>
+	<link>http://localhost:8080/MusicFever/faces/index.xhtml</link>
+	<author>Luka Trifunovic</author>
+	<guid></guid>
+
+</item>
+<item>
+	<title>Ray of Light 2</title>
+	<description>Madonna</description>
+	<link>http://localhost:8080/MusicFever/faces/index.xhtml</link>
+	<author>Luka Trifunovic</author>
+	<guid></guid>
+
+</item>
+
+</channel>
+</rss>

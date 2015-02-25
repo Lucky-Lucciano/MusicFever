@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import net.etfbl.musicfever.dto.Comment;
 import net.etfbl.musicfever.dto.Event;
 import net.etfbl.musicfever.dto.Genre;
+import net.etfbl.musicfever.dto.Playlist;
 import net.etfbl.musicfever.dto.Song;
+import net.etfbl.musicfever.dto.SongFavourite;
 
 public class SongDAO {
 	private static final String SQL_SONG_DETAILS = "SELECT * FROM song WHERE id=? limit 1";
@@ -28,7 +30,14 @@ public class SongDAO {
 	private static final String SQL_GET_RATING = "SELECT score FROM music_fever.rating WHERE user_id=? AND song_id=?";
 	private static final String SQL_ADD_COMMENT = "INSERT INTO comment (user_id, song_id, comment, time) VALUES(?, ?, ?, NOW())";
 	private static final String SQL_GET_COMMENTS = "SELECT * FROM comment WHERE song_id=?";
+	private static final String SQL_GET_PLAYLISTS = "SELECT * FROM playlist WHERE user_id=?";
 	private static final String SQL_DELETE_COMMENT = "DELETE FROM comment WHERE user_id=? AND song_id=?";
+	private static final String SQL_DELETE_PLAYLIST = "DELETE FROM playlist WHERE id=?";
+	private static final String SQL_ADD_PLAYLIST = "INSERT INTO playlist(user_id, title, description) VALUES(?, ?, ?)";
+	private static final String SQL_ADD_SONG_TO_PLAYLIST = "INSERT INTO playlist_has_song(playlist_id, song_id) VALUES(?, ?)";
+	private static final String SQL_GET_SONGS_FROM_PLAYLIST = "SELECT id, user_id, artist, name, active, release_date, date_added, duration, location, file_type, lyrics FROM song INNER JOIN playlist_has_song ON song.id = playlist_has_song.song_id WHERE playlist_has_song.playlist_id = ?";
+	private static final String SQL_SELECT_BEST_SONGS = "SELECT id, song.user_id, artist, name, active, release_date, date_added, duration, location, file_type, lyrics, AVG(score) as Average FROM song inner join rating on song.id = rating.song_id group by song.id ORDER BY Average desc LIMIT 5;";
+	private static final String SQL_REPORT_FAV = "SELECT id, song.user_id, artist, name, active, release_date, date_added, duration, location, file_type, lyrics, COUNT(song_id) as ukupno FROM favourite inner join song on song.id = favourite.song_id GROUP BY song_id ORDER  BY ukupno DESC";
 	
 	public static Song addSong(Song song) {
 		Connection connection = null;
@@ -64,6 +73,63 @@ public class SongDAO {
 			ConnectionPool.getConnectionPool().checkIn(connection);
 		}
 		return song;
+	}
+	
+	public static ArrayList<Song> selectBest5Songs(){
+		ArrayList<Song> retVal = new ArrayList<Song>();
+		Connection connection = null;
+		ResultSet rs = null;
+		Object values[] = {};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_SELECT_BEST_SONGS, false, values);
+			rs = pstmt.executeQuery();
+			while (rs.next()){
+				Song temp = new Song(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getInt(5) == 1, rs.getInt(10), rs.getDate(6),
+										rs.getInt(8), rs.getDate(7), rs.getString(9), rs.getString(11));
+				temp.setGenres(GenreDAO.getGenresOnSong(temp.getId()));
+				
+				retVal.add(temp);
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+		return retVal;
+	}
+	
+	public static ArrayList<SongFavourite> reportFavourites(){
+		ArrayList<SongFavourite> retVal = new ArrayList<SongFavourite>();
+		
+		Connection connection = null;
+		ResultSet rs = null;
+		Object values[] = {};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_REPORT_FAV, false, values);
+			rs = pstmt.executeQuery();
+			while (rs.next()){
+				SongFavourite sf = new SongFavourite();
+				Song temp = new Song(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getInt(5) == 1, rs.getInt(10), rs.getDate(6),
+										rs.getInt(8), rs.getDate(7), rs.getString(9), rs.getString(11));
+				temp.setGenres(GenreDAO.getGenresOnSong(temp.getId()));
+				
+				sf.setSong(temp);
+				sf.setFavouriteCount(rs.getInt(12));
+				
+				retVal.add(sf);
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+		return retVal;
 	}
 	
 	public static boolean updateSong(Song song) {
@@ -125,6 +191,32 @@ public class SongDAO {
 		}
 	}
 	
+	public static boolean addPlaylist(int userid, Playlist pl) {
+		Connection connection = null;
+		boolean retVal = false;
+		Object[] values = {userid, pl.getTitle(), pl.getDescription()};
+
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement ps = DAOUtil.prepareStatement(connection, SQL_ADD_PLAYLIST, false, values);
+			int rez = ps.executeUpdate();
+			if (rez == 0) {
+				System.out.println("Failed to add playlist");
+				retVal = false;
+			} else {
+				retVal = true;
+			}
+			ps.close();
+			
+			return retVal;
+		} catch (SQLException e) {
+			System.out.println("Add playlist exception " + e);
+			return retVal;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+	}
+	
 	public static ArrayList<Comment> getCommentsOnSong(Song song) {
 		Connection connection = null;
 		ArrayList<Comment> rez = new ArrayList<Comment>();
@@ -145,6 +237,105 @@ public class SongDAO {
 			return rez;
 		} finally {
 			ConnectionPool.getConnectionPool().checkIn(connection);			
+		}
+	}
+	
+	public static ArrayList<Playlist> getPlaylists(int uid) {
+		Connection connection = null;
+		ArrayList<Playlist> rez = new ArrayList<Playlist>();
+		Object values[] = {uid};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_GET_PLAYLISTS, false, values);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				rez.add(new Playlist(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4)));
+			}
+			
+			rs.close();
+			pstmt.close();
+			return rez;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return rez;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);			
+		}
+	}
+	
+	public static boolean addSongToPlaylist(int plid, Song song) {
+		Connection connection = null;
+		boolean retVal = false;
+		Object[] values = {plid, song.getId()};
+
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement ps = DAOUtil.prepareStatement(connection, SQL_ADD_SONG_TO_PLAYLIST, false, values);
+			int rez = ps.executeUpdate();
+			if (rez == 0) {
+				System.out.println("Failed to add comment");
+				retVal = false;
+			} else {
+				retVal = true;
+			}
+			ps.close();
+			
+			return retVal;
+		} catch (SQLException e) {
+			System.out.println("Add comment exception " + e);
+			return retVal;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
+		}
+	}
+	
+	public static ArrayList<Song> getSongsOnPlaylist(Playlist pl) {
+		Connection connection = null;
+		ArrayList<Song> rez = new ArrayList<Song>();
+		Object values[] = {pl.getId()};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_GET_SONGS_FROM_PLAYLIST, false, values);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Song temp = new Song(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getInt(5) == 1, rs.getInt(10), rs.getDate(6),
+						rs.getInt(8), rs.getDate(7), rs.getString(9), rs.getString(11));
+				temp.setGenres(GenreDAO.getGenresOnSong(temp.getId()));
+				
+				rez.add(temp);
+			}
+			
+			rs.close();
+			pstmt.close();
+			
+			return rez;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return rez;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);			
+		}
+	}
+	
+	public static boolean deletePlaylist(Playlist pl) {
+		Connection connection = null;
+		Object values[] = {pl.getId()};
+		
+		try {
+			connection = ConnectionPool.getConnectionPool().checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_DELETE_PLAYLIST, false, values);
+			pstmt.executeUpdate();
+			pstmt.close();
+			return true;
+		} catch(Exception ex) {
+			ex.printStackTrace(System.err);
+			return false;
+		} finally {
+			ConnectionPool.getConnectionPool().checkIn(connection);
 		}
 	}
 	

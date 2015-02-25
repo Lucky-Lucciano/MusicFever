@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+      
+    <h:head/>
+    <h:body>
+        <ui:composition>
+	        <div class="content">
+				<ul class="navlist clearfix" style="margin-bottom: 10px">
+					<li ><h:link value="Users" outcome="admin"/></li>
+					<li><h:link value="Genres" outcome="admin-genre"/></li>
+					<li ><h:link value="Events" outcome="admin-event"/></li>
+					<li class="active"><h:link value="Report Favourite" outcome="admin-report-fav"/></li>
+					<li >
+						<h:form>
+						<h:commandLink  value="Profile" action="#{userBean.goToAccount}">  
+								<f:setPropertyActionListener value="#{userBean.user}" target="#{userBean.userSelected}" />
+							</h:commandLink>
+						</h:form>
+					</li>
+				</ul>
+           	            	
+	            <h:form id="eventForm">
+	            	<p:dataTable id="reportDT" var="sf" value="#{songBean.reportFav}" style="text-align: center"> 
+				        <f:facet name="header">
+				            Favourites Report
+				        </f:facet>
+				        <p:column headerText="Name">
+				            <h:outputText value="#{sf.song.name}" />
+				        </p:column>
+				        <p:column headerText="Favourite Count">
+				            <h:outputText value="#{sf.favouriteCount}" />
+				        </p:column>
+				    </p:dataTable>
+	            </h:form>
+	        </div>
+	        	
+        </ui:composition>
+    </h:body>
+</html>

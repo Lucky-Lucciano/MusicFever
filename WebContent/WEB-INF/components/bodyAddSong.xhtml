@@ -50,15 +50,6 @@
 					        	</p:selectOneMenu>
 					        	
 					        	<p:inputText value="#{songBean.songAdd.location}" id="songLocation" placeholder="Link" styleClass="textfield__input sc-input sc-input-medium link-correction"></p:inputText>
-								
-								<h:panelGroup id="songLocationFile" style="display:none ; margin-left: 12px;">
-									<h:form  enctype="multipart/form-data" >
-							            <h:inputFile  value="#{songBean.uploadFile}" />
-							            <h:commandButton value="submit" action="#{songBean.callUploadServlet}" />
-							            <h:messages />
-							        </h:form>
-								</h:panelGroup>
-								
 							</div>
 						  </label>
 						</div>

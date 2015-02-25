@@ -2,9 +2,15 @@ package net.etfbl.musicfever.beans;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -28,8 +34,14 @@ import net.etfbl.musicfever.dao.SongDAO;
 import net.etfbl.musicfever.dao.UserDAO;
 import net.etfbl.musicfever.dto.Comment;
 import net.etfbl.musicfever.dto.Genre;
+import net.etfbl.musicfever.dto.Playlist;
 import net.etfbl.musicfever.dto.Song;
+import net.etfbl.musicfever.dto.SongFavourite;
 import net.etfbl.musicfever.dto.User;
+import net.etfbl.rss.model.Feed;
+import net.etfbl.rss.model.FeedMessage;
+import net.etfbl.rss.reader.RSSFeedParser;
+import net.etfbl.rss.writer.RSSFeedWriter;
 
 @ManagedBean
 @SessionScoped
@@ -40,6 +52,9 @@ public class SongBean implements Serializable {
 	private Song songDelete = new Song();
 	private Song songAdd = new Song();
 	private Song songSelected = new Song();
+	private Playlist plAdd = new Playlist();
+	private Playlist plSelected = new Playlist();
+	private Playlist plDelete = new Playlist();
 	private Part uploadFile;
 	
 	private ArrayList<Genre> allGenres = GenreDAO.getAllGenres();
@@ -48,6 +63,10 @@ public class SongBean implements Serializable {
 	private ArrayList<Song> latestAddedSongs = new ArrayList<Song>();
 	private ArrayList<Song> searchResults = new ArrayList<Song>();
 	private ArrayList<Song> userSongs = new ArrayList<Song>();
+	private ArrayList<Song> playlistSongs = new ArrayList<Song>();
+	private ArrayList<Playlist> userPlaylists = new ArrayList<Playlist>();
+	private ArrayList<FeedMessage> feedCont = new ArrayList<FeedMessage>();
+	private ArrayList<SongFavourite> reportFav = new ArrayList<SongFavourite>();
 	private StreamedContent file;
 	private boolean favourited;
 	private String searchQuery = "";
@@ -61,13 +80,134 @@ public class SongBean implements Serializable {
 	private String profilePic = "";
 	private int deletCommentUser;
 	private String addComment;
+	private String plAddFromSong;
+	private Map<String,String> plAddFromSongs = new HashMap<String, String>();
 	
+	{
+		generateRss();
+	}
 	
 	
 //	public String getProfilePic() {
 //		return  UserDAO.getCommentsOnSong(songSelected);
 //	}
 	
+	
+	
+	public ArrayList<FeedMessage> getFeedCont() {
+		RSSFeedParser parser = new RSSFeedParser("http://www.rollingstone.com/music.rss");
+		Feed feed = parser.readFeed();
+		ArrayList<FeedMessage> tmp = new ArrayList<FeedMessage>();
+		
+		System.out.println(feed);
+		for (FeedMessage message : feed.getMessages()) {
+			if(tmp.size() > 5)
+				break;
+			tmp.add(message);
+		}		
+//		
+//		List<FeedMessage> source = feed.getMessages();
+//		
+//		for (int i = 0; i < 5; i++) {
+//			tmp.add(source.get(i));
+//		}
+
+		return tmp;
+	}
+	
+	public String getPlAddFromSong() {
+		return plAddFromSong;
+	}
+
+	public void setPlAddFromSong(String plAddFromSong) {
+		this.plAddFromSong = plAddFromSong;
+	}
+	
+	
+
+	public ArrayList<SongFavourite> getReportFav() {
+		return SongDAO.reportFavourites();
+	}
+
+	public void setReportFav(ArrayList<SongFavourite> reportFav) {
+		this.reportFav = reportFav;
+	}
+
+	public Map<String, String> getPlAddFromSongs() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+		ArrayList<Playlist> arr = SongDAO.getPlaylists(uid);
+		for (Playlist product : arr) {
+		   plAddFromSongs.put(product.getTitle(), String.valueOf(product.getId()));
+		}
+		
+		return plAddFromSongs;
+	}
+
+	public void setPlAddFromSongs(Map<String, String> plAddFromSongs) {
+		this.plAddFromSongs = plAddFromSongs;
+	}
+
+	public String addToPlaylist() {
+		if(SongDAO.addSongToPlaylist(Integer.parseInt(plAddFromSong), songSelected)) {
+			String messageSuccess = "Succesfully added to playlist!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			
+			return "";
+		} else {
+			String messageFailure = "Failed to add!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
+	public void generateRss(){ 
+		String copyright = "Copyright hold by Luka Trifunovic";
+	    String title = "Best rated songs";
+	    String description = "Latest best rated songs";
+	    String language = "en";
+	    String link = "";
+	    Calendar cal = new GregorianCalendar();
+	    Date creationDate = cal.getTime();
+	    SimpleDateFormat date_format = new SimpleDateFormat("EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z", Locale.US);
+	    String pubdate = date_format.format(creationDate);
+	    Feed rssFeeder = new Feed(title, link, description, language, copyright, pubdate);
+	    
+	    // Now add one example entry
+		ArrayList<Song> songs = SongDAO.selectBest5Songs();
+		for (Song d : songs){
+		    FeedMessage feed = new FeedMessage();
+		    feed.setTitle(d.getName());
+		    feed.setDescription(d.getArtist());
+		    feed.setAuthor("Luka Trifunovic");
+		    feed.setLink("http://localhost:8080/MusicFever/faces/index.xhtml");
+		    rssFeeder.getMessages().add(feed);
+		}
+	    // Now write the file
+	    String realPath = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/");
+	    RSSFeedWriter writer = new RSSFeedWriter(rssFeeder, realPath + "top5.rss");
+	    try {
+	      writer.write();
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	}
+
+	public void setFeedCont(ArrayList<FeedMessage> feedCont) {
+		this.feedCont = feedCont;
+	}
+	
+	public Playlist getPlDelete() {
+		return plDelete;
+	}
+
+	public void setPlDelete(Playlist plDelete) {
+		this.plDelete = plDelete;
+	}
+
 	public String addNewComment() {
 		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
 		int uid = curentUser.getUser().getId();
@@ -79,13 +219,104 @@ public class SongBean implements Serializable {
 		
 	}
 	
-	public String removeComment() {		
-		if(SongDAO.deleteComment(deletCommentUser, songSelected)) {
+	public String addNewPlaylist() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
+		
+		if(SongDAO.addPlaylist(uid, plAdd)) {
+			plAdd = new Playlist();
+			String messageSuccess = "Succesfully added playlist!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			
 			return "";
 		} else {
+			plAdd = new Playlist();
+			String messageFailure = "Playlist couldn't be added!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
 			return null;
 		}
+	}
+	
+	
+	public ArrayList<Song> getPlaylistSongs() {
+		return playlistSongs;
+	}
+
+
+
+	public void setPlaylistSongs(ArrayList<Song> playlistSongs) {
+		this.playlistSongs = playlistSongs;
+	}
+
+
+
+	public ArrayList<Playlist> getUserPlaylists() {
+		UserBean curentUser = (UserBean) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("userBean");
+		int uid = curentUser.getUser().getId();
 		
+		return SongDAO.getPlaylists(uid);
+	}
+
+
+
+	public void setUserPlaylists(ArrayList<Playlist> userPlaylists) {
+		this.userPlaylists = userPlaylists;
+	}
+
+	public String removePlaylist() {		
+		if(SongDAO.deletePlaylist(plDelete)) {
+			String messageSuccess = "Playlist removed!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			
+			return "";
+		} else {
+			String messageFailure = "Playlist couldn't be removed!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
+	}
+	
+	public String showPlaylistSongs() {
+		playlistSongs = SongDAO.getSongsOnPlaylist(plSelected);
+		
+		return "";
+	}
+	
+	public Playlist getPlAdd() {
+		return plAdd;
+	}
+
+	public void setPlAdd(Playlist plAdd) {
+		this.plAdd = plAdd;
+	}
+
+	public Playlist getPlSelected() {
+		return plSelected;
+	}
+
+	public void setPlSelected(Playlist plSelected) {
+		this.plSelected = plSelected;
+	}
+
+	public String removeComment() {		
+		if(SongDAO.deleteComment(deletCommentUser, songSelected)) {
+			String messageSuccess = "Comment added!";
+			System.out.println(messageSuccess);
+			addMessage(messageSuccess);
+			
+			// Odvesti na my songs
+			return "";
+		} else {
+
+			String messageFailure = "Comment couldn't be added!";
+			System.out.println(messageFailure);
+			addMessage(messageFailure);
+			return null;
+		}
 	}
 	
 	public String getAddComment() {

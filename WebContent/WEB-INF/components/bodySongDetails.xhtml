@@ -169,6 +169,14 @@
 					        </p:rating>
 						</h:panelGroup>
 						
+				        <p:outputLabel for="sg" value="Add to playlist: " />
+				        <p:selectOneMenu id="sg" value="#{songBean.plAddFromSong}" effect="fold" > 
+<!-- 				            <f:selectItem itemLabel="Select One" itemValue="" /> -->
+				            <f:selectItems value="#{songBean.plAddFromSongs}" />
+				        </p:selectOneMenu>
+				        
+				        <p:commandButton  value="Add" icon="ui-icon-plus" action="#{songBean.addToPlaylist}" />
+				        
 					</div>
 				</div>
 			</div>

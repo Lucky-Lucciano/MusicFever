@@ -2,6 +2,7 @@ package net.etfbl.musicfever.dto;
 
 public class Playlist {
 	private int id;
+	private int userId;
 	private String title;
 	private String description;
 	
@@ -9,9 +10,10 @@ public class Playlist {
 		
 	}
 
-	public Playlist(int id, String title, String description) {
+	public Playlist(int id, int userId, String title, String description) {
 		super();
 		this.id = id;
+		this.userId = userId;
 		this.title = title;
 		this.description = description;
 	}
@@ -22,6 +24,14 @@ public class Playlist {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getTitle() {
